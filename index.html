@@ -1,0 +1,89 @@
+class BreathSoundscapeEngine {
+    constructor() {
+        this.audioCtx = null;
+        this.isPlaying = false;
+    }
+
+    init() {
+        // Initialize Web Audio Context
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.audioCtx = new AudioContext();
+
+        // Master Gain Node
+        this.masterGain = this.audioCtx.createGain();
+        this.masterGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+
+        // Analyser Node for Oscilloscope
+        this.analyser = this.audioCtx.createAnalyser();
+        this.analyser.fftSize = 2048;
+
+        // Master Low-Pass Filter (Timbral AC Breathing)
+        this.filter = this.audioCtx.createBiquadFilter();
+        this.filter.type = 'lowpass';
+        this.filter.frequency.setValueAtTime(300, this.audioCtx.currentTime);
+
+        // Connect Audio Graph
+        this.filter.connect(this.masterGain);
+        this.masterGain.connect(this.analyser);
+        this.analyser.connect(this.audioCtx.destination);
+
+        // Setup 0.1Hz Breath LFO (AC Wave Modulation)
+        this.setupBreathLFO();
+        this.setupSoundBathInstruments();
+    }
+
+    setupBreathLFO() {
+        // 0.1 Hz = 10 second breath cycle (6 breaths/minute)
+        this.breathLFO = this.audioCtx.createOscillator();
+        this.breathLFO.type = 'sine';
+        this.breathLFO.frequency.setValueAtTime(0.1, this.audioCtx.currentTime);
+
+        // LFO Gain depth for Filter and Volume pulsing
+        this.lfoGain = this.audioCtx.createGain();
+        this.lfoGain.gain.setValueAtTime(250, this.audioCtx.currentTime); // Filter sweep depth
+
+        this.breathLFO.connect(this.lfoGain);
+        this.lfoGain.connect(this.filter.frequency);
+        
+        this.breathLFO.start();
+    }
+
+    setupSoundBathInstruments() {
+        // 1. Crystal Singing Bowl Base Tone (Sine Fundamental + Harmonic)
+        this.bowlOsc = this.audioCtx.createOscillator();
+        this.bowlOsc.type = 'sine';
+        this.bowlOsc.frequency.setValueAtTime(110.0, this.audioCtx.currentTime); // A2 Root Anchor
+
+        this.bowlGain = this.audioCtx.createGain();
+        this.bowlGain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
+
+        this.bowlOsc.connect(this.bowlGain);
+        this.bowlGain.connect(this.filter);
+        this.bowlOsc.start();
+
+        // 2. Gong Sub-Bass Layer
+        this.gongOsc = this.audioCtx.createOscillator();
+        this.gongOsc.type = 'triangle';
+        this.gongOsc.frequency.setValueAtTime(55.0, this.audioCtx.currentTime); // Sub octave
+
+        this.gongGain = this.audioCtx.createGain();
+        this.gongGain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+
+        this.gongOsc.connect(this.gongGain);
+        this.gongGain.connect(this.filter);
+        this.gongOsc.start();
+    }
+
+    togglePlay() {
+        if (!this.audioCtx) {
+            this.init();
+        }
+        if (this.audioCtx.state === 'suspended') {
+            this.audioCtx.resume();
+        }
+        this.isPlaying = !this.isPlaying;
+        if (!this.isPlaying) {
+            this.audioCtx.suspend();
+        }
+    }
+}
