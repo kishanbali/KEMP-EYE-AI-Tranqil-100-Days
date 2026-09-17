@@ -1,89 +1,257 @@
-class BreathSoundscapeEngine {
-    constructor() {
-        this.audioCtx = null;
-        this.isPlaying = false;
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KEMP EYE - Breath Soundscape Engine</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #07090e;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 1.5rem;
+            letter-spacing: 0.2rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+        p.subtitle {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            letter-spacing: 0.1rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+        canvas {
+            width: 100%;
+            height: 180px;
+            background: #0b0f19;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        button {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            text-transform: uppercase;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+        }
+        button:active {
+            transform: translateY(1px);
+        }
+        .status {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #64748b;
+            letter-spacing: 0.05rem;
+        }
+    </style>
+</head>
+<body>
 
-    init() {
-        // Initialize Web Audio Context
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.audioCtx = new AudioContext();
-
-        // Master Gain Node
-        this.masterGain = this.audioCtx.createGain();
-        this.masterGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
-
-        // Analyser Node for Oscilloscope
-        this.analyser = this.audioCtx.createAnalyser();
-        this.analyser.fftSize = 2048;
-
-        // Master Low-Pass Filter (Timbral AC Breathing)
-        this.filter = this.audioCtx.createBiquadFilter();
-        this.filter.type = 'lowpass';
-        this.filter.frequency.setValueAtTime(300, this.audioCtx.currentTime);
-
-        // Connect Audio Graph
-        this.filter.connect(this.masterGain);
-        this.masterGain.connect(this.analyser);
-        this.analyser.connect(this.audioCtx.destination);
-
-        // Setup 0.1Hz Breath LFO (AC Wave Modulation)
-        this.setupBreathLFO();
-        this.setupSoundBathInstruments();
-    }
-
-    setupBreathLFO() {
-        // 0.1 Hz = 10 second breath cycle (6 breaths/minute)
-        this.breathLFO = this.audioCtx.createOscillator();
-        this.breathLFO.type = 'sine';
-        this.breathLFO.frequency.setValueAtTime(0.1, this.audioCtx.currentTime);
-
-        // LFO Gain depth for Filter and Volume pulsing
-        this.lfoGain = this.audioCtx.createGain();
-        this.lfoGain.gain.setValueAtTime(250, this.audioCtx.currentTime); // Filter sweep depth
-
-        this.breathLFO.connect(this.lfoGain);
-        this.lfoGain.connect(this.filter.frequency);
+    <div class="container">
+        <h1>KEMP EYE</h1>
+        <p class="subtitle">Breath-Synchronized AC Soundscape</p>
         
-        this.breathLFO.start();
-    }
+        <!-- Oscilloscope Canvas Visualizer -->
+        <canvas id="oscilloscope" width="600" height="180"></canvas>
+        
+        <!-- Control Trigger -->
+        <button id="playBtn" onclick="toggleEngine()">Initialize Sound Bath</button>
+        <div id="status" class="status">System Ready (Idle)</div>
+    </div>
 
-    setupSoundBathInstruments() {
-        // 1. Crystal Singing Bowl Base Tone (Sine Fundamental + Harmonic)
-        this.bowlOsc = this.audioCtx.createOscillator();
-        this.bowlOsc.type = 'sine';
-        this.bowlOsc.frequency.setValueAtTime(110.0, this.audioCtx.currentTime); // A2 Root Anchor
+    <script>
+        class BreathSoundscapeEngine {
+            constructor() {
+                this.audioCtx = null;
+                this.isPlaying = false;
+            }
 
-        this.bowlGain = this.audioCtx.createGain();
-        this.bowlGain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
+            init() {
+                // Initialize Web Audio Context
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                this.audioCtx = new AudioContext();
 
-        this.bowlOsc.connect(this.bowlGain);
-        this.bowlGain.connect(this.filter);
-        this.bowlOsc.start();
+                // Master Gain Node
+                this.masterGain = this.audioCtx.createGain();
+                this.masterGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
 
-        // 2. Gong Sub-Bass Layer
-        this.gongOsc = this.audioCtx.createOscillator();
-        this.gongOsc.type = 'triangle';
-        this.gongOsc.frequency.setValueAtTime(55.0, this.audioCtx.currentTime); // Sub octave
+                // Analyser Node for Oscilloscope
+                this.analyser = this.audioCtx.createAnalyser();
+                this.analyser.fftSize = 2048;
 
-        this.gongGain = this.audioCtx.createGain();
-        this.gongGain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+                // Master Low-Pass Filter (Timbral AC Breathing)
+                this.filter = this.audioCtx.createBiquadFilter();
+                this.filter.type = 'lowpass';
+                this.filter.frequency.setValueAtTime(300, this.audioCtx.currentTime);
 
-        this.gongOsc.connect(this.gongGain);
-        this.gongGain.connect(this.filter);
-        this.gongOsc.start();
-    }
+                // Connect Audio Graph
+                this.filter.connect(this.masterGain);
+                this.masterGain.connect(this.analyser);
+                this.analyser.connect(this.audioCtx.destination);
 
-    togglePlay() {
-        if (!this.audioCtx) {
-            this.init();
+                // Setup 0.1Hz Breath LFO (AC Wave Modulation)
+                this.setupBreathLFO();
+                this.setupSoundBathInstruments();
+            }
+
+            setupBreathLFO() {
+                // 0.1 Hz = 10 second breath cycle (6 breaths/minute)
+                this.breathLFO = this.audioCtx.createOscillator();
+                this.breathLFO.type = 'sine';
+                this.breathLFO.frequency.setValueAtTime(0.1, this.audioCtx.currentTime);
+
+                // LFO Gain depth for Filter and Volume pulsing
+                this.lfoGain = this.audioCtx.createGain();
+                this.lfoGain.gain.setValueAtTime(250, this.audioCtx.currentTime); // Filter sweep depth
+
+                this.breathLFO.connect(this.lfoGain);
+                this.lfoGain.connect(this.filter.frequency);
+                
+                this.breathLFO.start();
+            }
+
+            setupSoundBathInstruments() {
+                // 1. Crystal Singing Bowl Base Tone (Sine Fundamental + Harmonic)
+                this.bowlOsc = this.audioCtx.createOscillator();
+                this.bowlOsc.type = 'sine';
+                this.bowlOsc.frequency.setValueAtTime(110.0, this.audioCtx.currentTime); // A2 Root Anchor
+
+                this.bowlGain = this.audioCtx.createGain();
+                this.bowlGain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
+
+                this.bowlOsc.connect(this.bowlGain);
+                this.bowlGain.connect(this.filter);
+                this.bowlOsc.start();
+
+                // 2. Gong Sub-Bass Layer
+                this.gongOsc = this.audioCtx.createOscillator();
+                this.gongOsc.type = 'triangle';
+                this.gongOsc.frequency.setValueAtTime(55.0, this.audioCtx.currentTime); // Sub octave
+
+                this.gongGain = this.audioCtx.createGain();
+                this.gongGain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+
+                this.gongOsc.connect(this.gongGain);
+                this.gongGain.connect(this.filter);
+                this.gongOsc.start();
+            }
+
+            togglePlay() {
+                if (!this.audioCtx) {
+                    this.init();
+                }
+                if (this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
+                this.isPlaying = !this.isPlaying;
+                if (!this.isPlaying) {
+                    this.audioCtx.suspend();
+                }
+            }
         }
-        if (this.audioCtx.state === 'suspended') {
-            this.audioCtx.resume();
+
+        // Instantiate Engine and Setup Canvas Animation Loop
+        const engine = new BreathSoundscapeEngine();
+        const canvas = document.getElementById('oscilloscope');
+        const canvasCtx = canvas.getContext('2d');
+        const playBtn = document.getElementById('playBtn');
+        const statusDiv = document.getElementById('status');
+
+        function toggleEngine() {
+            engine.togglePlay();
+            if (engine.isPlaying) {
+                playBtn.textContent = 'Pause Sound Bath';
+                statusDiv.textContent = 'Active (Breath-Synchronized AC Wave)';
+                drawVisualizer();
+            } else {
+                playBtn.textContent = 'Resume Sound Bath';
+                statusDiv.textContent = 'Paused';
+            }
         }
-        this.isPlaying = !this.isPlaying;
-        if (!this.isPlaying) {
-            this.audioCtx.suspend();
+
+        function drawVisualizer() {
+            requestAnimationFrame(drawVisualizer);
+
+            if (!engine.isPlaying || !engine.analyser) {
+                // Draw flat idle line when paused
+                canvasCtx.fillStyle = '#0b0f19';
+                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+                canvasCtx.lineWidth = 2;
+                canvasCtx.strokeStyle = '#1e293b';
+                canvasCtx.beginPath();
+                canvasCtx.moveTo(0, canvas.height / 2);
+                canvasCtx.lineTo(canvas.width, canvas.height / 2);
+                canvasCtx.stroke();
+                return;
+            }
+
+            const bufferLength = engine.analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            engine.analyser.getByteTimeDomainData(dataArray);
+
+            canvasCtx.fillStyle = '#0b0f19';
+            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            canvasCtx.lineWidth = 2;
+            canvasCtx.strokeStyle = '#3b82f6';
+            canvasCtx.beginPath();
+
+            const sliceWidth = canvas.width * 1.0 / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * canvas.height / 2;
+
+                if (i === 0) {
+                    canvasCtx.moveTo(x, y);
+                } else {
+                    canvasCtx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            canvasCtx.lineTo(canvas.width, canvas.height / 2);
+            canvasCtx.stroke();
         }
-    }
-}
+
+        // Initial idle render call
+        drawVisualizer();
+    </script>
+</body>
+</html>
