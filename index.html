@@ -3,255 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEMP EYE - Breath Soundscape Engine</title>
+    <title>KEMP EYE 👁️ AI Tranquil 100 days</title>
+    
+    <!-- Self-Contained PWA Manifest Data URI -->
+    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":"./index.html","display":"standalone","background_color":"%2307090e","theme_color":"%2307090e"}'>
+    <meta name="theme-color" content="#07090e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        body {
+        body, html {
+            width: 100%;
+            height: 100%;
             background-color: #07090e;
-            color: #e2e8f0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #d4af37;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Guidance Overlay Screen */
+        #guidance-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 9, 14, 0.98);
+            z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-        .container {
+            padding: 24px;
             text-align: center;
+            transition: opacity 0.5s ease;
+        }
+        #guidance-screen h2 {
+            font-size: 13px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            color: #d4af37;
+        }
+        .guidance-box {
+            max-width: 440px;
+            font-size: 13px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* App Container */
+        #app-container {
             width: 100%;
-            max-width: 600px;
-            padding: 2rem;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px;
+            position: relative;
         }
-        h1 {
-            font-size: 1.5rem;
-            letter-spacing: 0.2rem;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-            text-transform: uppercase;
+
+        header {
+            text-align: center;
+            margin-top: 8px;
+            margin-bottom: 14px;
         }
-        p.subtitle {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            letter-spacing: 0.1rem;
-            margin-bottom: 2rem;
+        header h1 {
+            font-size: 14px;
+            letter-spacing: 2.5px;
             text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* Day Grid Selector (1-12) */
+        .day-progress-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(212, 175, 55, 0.7);
+            margin-bottom: 6px;
+        }
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            width: 100%;
+            margin-bottom: 14px;
+        }
+        .day-btn {
+            background: rgba(212, 175, 55, 0.04);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #d4af37;
+            padding: 7px 0;
+            font-size: 11px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .day-btn.active {
+            background: #d4af37;
+            color: #07090e;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        .active-day-title {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        /* Canvas Viewport */
+        .canvas-container {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         canvas {
             width: 100%;
-            height: 180px;
-            background: #0b0f19;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            height: 100%;
+            display: block;
         }
-        button {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+
+        /* Play Controls & Timer */
+        .control-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .timer-display {
+            font-size: 18px;
+            letter-spacing: 3px;
+            font-variant-numeric: tabular-nums;
             color: #ffffff;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.1rem;
-            border-radius: 50px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        button.action-btn {
+            flex: 1;
+            background: rgba(7, 9, 14, 0.9);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 11px 16px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             cursor: pointer;
+            border-radius: 25px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+        button.action-btn:hover {
+            background: #d4af37;
+            color: #07090e;
+        }
+
+        /* Health & Safety / Footnotes */
+        .info-section {
+            width: 100%;
+            font-size: 9.5px;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.48);
+            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            padding-top: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .info-section h3 {
+            font-size: 9.5px;
+            letter-spacing: 2px;
+            color: #d4af37;
             text-transform: uppercase;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+        .privacy-badge {
+            text-align: center;
+            font-size: 8.5px;
+            letter-spacing: 2.5px;
+            color: rgba(212, 175, 55, 0.75);
+            margin-bottom: 10px;
         }
-        button:active {
-            transform: translateY(1px);
-        }
-        .status {
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #64748b;
-            letter-spacing: 0.05rem;
+        footer {
+            text-align: center;
+            font-size: 8.5px;
+            color: rgba(255, 255, 255, 0.35);
+            line-height: 1.45;
+            padding-bottom: 16px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>KEMP EYE</h1>
-        <p class="subtitle">Breath-Synchronized AC Soundscape</p>
+    <!-- Guidance Screen Overlay -->
+    <div id="guidance-screen">
+        <h2>Before You Begin</h2>
+        <div class="guidance-box">
+            <p>Find a comfortable position and allow your body to settle.</p>
+            <p>Place one hand, palm resting softly on your chest.</p>
+            <p>Close your eyes, or soften your gaze.</p>
+            <p>Notice your natural breathing. Don't change or control it.</p>
+            <p>Simply watch the breath as it comes and goes.</p>
+            <p>Allow the sound and guidance to be present.</p>
+            <p><strong>Nothing to achieve. Nothing to force. Remain here.</strong></p>
+        </div>
+        <button class="action-btn" id="enter-btn" style="max-width: 220px;">Enter Experience</button>
+    </div>
+
+    <!-- Main PWA App Interface -->
+    <div id="app-container">
+        <header>
+            <h1>KEMP EYE 👁️ AI Tranquil 100 days</h1>
+        </header>
+
+        <div class="day-progress-label">DAY 1 / 100</div>
         
-        <!-- Oscilloscope Canvas Visualizer -->
-        <canvas id="oscilloscope" width="600" height="180"></canvas>
-        
-        <!-- Control Trigger -->
-        <button id="playBtn" onclick="toggleEngine()">Initialize Sound Bath</button>
-        <div id="status" class="status">System Ready (Idle)</div>
+        <!-- Day Grid 1 to 12 -->
+        <div class="day-grid" id="day-grid"></div>
+
+        <div class="active-day-title" id="active-day-title">DAY 1</div>
+
+        <!-- Canvas for Ganesha Eye & Oscilloscope Waveform -->
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <!-- Play Controls & Timer -->
+        <div class="control-panel">
+            <div class="timer-display" id="timer-display">10:00</div>
+            <div class="btn-group">
+                <button class="action-btn" id="play-btn">▶️ PLAY</button>
+                <button class="action-btn" id="stop-btn">■ STOP</button>
+            </div>
+        </div>
+
+        <div class="privacy-badge">PRIVATE EXPERIENCE &nbsp;•&nbsp; NO DATA COLLECTED</div>
+
+        <!-- Health & Safety / Footnotes -->
+        <div class="info-section">
+            <h3>Health & Safety</h3>
+            <p>KEMP EYE 👁️ AI Tranquil is a software-based listening and embodied-awareness experience and is not medical treatment, diagnosis, psychotherapy, or a substitute for professional care. Use a comfortable listening volume. Stop if you experience pain, significant discomfort, dizziness, headache, distress, or another concerning symptom. Do not use while driving or operating machinery.</p>
+        </div>
+
+        <footer>
+            <p>©2026 KishanBali/KEMP Wisdom Publications — All Rights Reserved</p>
+            <p style="margin-top: 3px;">Disclaimer: This experience is provided for personal experiential use only and does not constitute medical, psychological, therapeutic, or professional advice.</p>
+        </footer>
     </div>
 
     <script>
-        class BreathSoundscapeEngine {
+        // Register Self-Contained Service Worker via Blob for PWA offline capability
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
+                self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
+                self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+            `;
+            const blob = new Blob([swCode], { type: 'text/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        }
+
+        class KempEyeTranquilApp {
             constructor() {
-                this.audioCtx = null;
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.playBtn = document.getElementById('play-btn');
+                this.stopBtn = document.getElementById('stop-btn');
+                this.enterBtn = document.getElementById('enter-btn');
+                this.guidanceScreen = document.getElementById('guidance-screen');
+                this.timerDisplay = document.getElementById('timer-display');
+                this.activeDayTitle = document.getElementById('active-day-title');
+
                 this.isPlaying = false;
+                this.audioCtx = null;
+                this.analyser = null;
+                this.startTime = 0;
+                this.selectedDay = 1;
+                this.timerInterval = null;
+                this.timeLeft = 600; // 10 minutes
+
+                this.initGrid();
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+
+                this.enterBtn.addEventListener('click', () => {
+                    this.guidanceScreen.style.opacity = '0';
+                    setTimeout(() => { this.guidanceScreen.style.display = 'none'; }, 500);
+                });
+
+                this.playBtn.addEventListener('click', () => this.togglePlay(true));
+                this.stopBtn.addEventListener('click', () => this.stopAudio());
+
+                this.render();
             }
 
-            init() {
-                // Initialize Web Audio Context
+            initGrid() {
+                const grid = document.getElementById('day-grid');
+                for (let i = 1; i <= 12; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = day-btn ${i === 1 ? 'active' : ''};
+                    btn.textContent = i;
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.selectedDay = i;
+                        this.activeDayTitle.textContent = DAY ${i};
+                    });
+                    grid.appendChild(btn);
+                }
+            }
+
+            resizeCanvas() {
+                const rect = this.canvas.parentElement.getBoundingClientRect();
+                this.width = rect.width;
+                this.height = rect.height;
+                this.canvas.width = this.width * window.devicePixelRatio;
+                this.canvas.height = this.height * window.devicePixelRatio;
+                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            }
+
+            initAudio() {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 this.audioCtx = new AudioContext();
 
-                // Master Gain Node
                 this.masterGain = this.audioCtx.createGain();
-                this.masterGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+                this.masterGain.gain.setValueAtTime(0.25, this.audioCtx.currentTime);
 
-                // Analyser Node for Oscilloscope
                 this.analyser = this.audioCtx.createAnalyser();
                 this.analyser.fftSize = 2048;
 
-                // Master Low-Pass Filter (Timbral AC Breathing)
                 this.filter = this.audioCtx.createBiquadFilter();
                 this.filter.type = 'lowpass';
-                this.filter.frequency.setValueAtTime(300, this.audioCtx.currentTime);
+                this.filter.frequency.setValueAtTime(400, this.audioCtx.currentTime);
 
-                // Connect Audio Graph
                 this.filter.connect(this.masterGain);
                 this.masterGain.connect(this.analyser);
                 this.analyser.connect(this.audioCtx.destination);
 
-                // Setup 0.1Hz Breath LFO (AC Wave Modulation)
-                this.setupBreathLFO();
-                this.setupSoundBathInstruments();
-            }
-
-            setupBreathLFO() {
-                // 0.1 Hz = 10 second breath cycle (6 breaths/minute)
+                // 0.1Hz Breath LFO
                 this.breathLFO = this.audioCtx.createOscillator();
                 this.breathLFO.type = 'sine';
                 this.breathLFO.frequency.setValueAtTime(0.1, this.audioCtx.currentTime);
 
-                // LFO Gain depth for Filter and Volume pulsing
                 this.lfoGain = this.audioCtx.createGain();
-                this.lfoGain.gain.setValueAtTime(250, this.audioCtx.currentTime); // Filter sweep depth
+                this.lfoGain.gain.setValueAtTime(300, this.audioCtx.currentTime);
 
                 this.breathLFO.connect(this.lfoGain);
                 this.lfoGain.connect(this.filter.frequency);
-                
                 this.breathLFO.start();
-            }
 
-            setupSoundBathInstruments() {
-                // 1. Crystal Singing Bowl Base Tone (Sine Fundamental + Harmonic)
+                // Crystal Bowl Root (110Hz A2 + day variance)
                 this.bowlOsc = this.audioCtx.createOscillator();
                 this.bowlOsc.type = 'sine';
-                this.bowlOsc.frequency.setValueAtTime(110.0, this.audioCtx.currentTime); // A2 Root Anchor
-
+                this.bowlOsc.frequency.setValueAtTime(110 + (this.selectedDay * 2), this.audioCtx.currentTime);
+                
                 this.bowlGain = this.audioCtx.createGain();
-                this.bowlGain.gain.setValueAtTime(0.15, this.audioCtx.currentTime);
-
+                this.bowlGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
+                
                 this.bowlOsc.connect(this.bowlGain);
                 this.bowlGain.connect(this.filter);
                 this.bowlOsc.start();
 
-                // 2. Gong Sub-Bass Layer
-                this.gongOsc = this.audioCtx.createOscillator();
-                this.gongOsc.type = 'triangle';
-                this.gongOsc.frequency.setValueAtTime(55.0, this.audioCtx.currentTime); // Sub octave
+                // Sub-Bass Layer
+                this.subOsc = this.audioCtx.createOscillator();
+                this.subOsc.type = 'triangle';
+                this.subOsc.frequency.setValueAtTime(55, this.audioCtx.currentTime);
 
-                this.gongGain = this.audioCtx.createGain();
-                this.gongGain.gain.setValueAtTime(0.08, this.audioCtx.currentTime);
+                this.subGain = this.audioCtx.createGain();
+                this.subGain.gain.setValueAtTime(0.12, this.audioCtx.currentTime);
 
-                this.gongOsc.connect(this.gongGain);
-                this.gongGain.connect(this.filter);
-                this.gongOsc.start();
+                this.subOsc.connect(this.subGain);
+                this.subGain.connect(this.filter);
+                this.subOsc.start();
+
+                this.startTime = this.audioCtx.currentTime;
             }
 
-            togglePlay() {
-                if (!this.audioCtx) {
-                    this.init();
-                }
-                if (this.audioCtx.state === 'suspended') {
-                    this.audioCtx.resume();
-                }
-                this.isPlaying = !this.isPlaying;
-                if (!this.isPlaying) {
-                    this.audioCtx.suspend();
-                }
-            }
-        }
-
-        // Instantiate Engine and Setup Canvas Animation Loop
-        const engine = new BreathSoundscapeEngine();
-        const canvas = document.getElementById('oscilloscope');
-        const canvasCtx = canvas.getContext('2d');
-        const playBtn = document.getElementById('playBtn');
-        const statusDiv = document.getElementById('status');
-
-        function toggleEngine() {
-            engine.togglePlay();
-            if (engine.isPlaying) {
-                playBtn.textContent = 'Pause Sound Bath';
-                statusDiv.textContent = 'Active (Breath-Synchronized AC Wave)';
-                drawVisualizer();
-            } else {
-                playBtn.textContent = 'Resume Sound Bath';
-                statusDiv.textContent = 'Paused';
-            }
-        }
-
-        function drawVisualizer() {
-            requestAnimationFrame(drawVisualizer);
-
-            if (!engine.isPlaying || !engine.analyser) {
-                // Draw flat idle line when paused
-                canvasCtx.fillStyle = '#0b0f19';
-                canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-                canvasCtx.lineWidth = 2;
-                canvasCtx.strokeStyle = '#1e293b';
-                canvasCtx.beginPath();
-                canvasCtx.moveTo(0, canvas.height / 2);
-                canvasCtx.lineTo(canvas.width, canvas.height / 2);
-                canvasCtx.stroke();
-                return;
-            }
-
-            const bufferLength = engine.analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            engine.analyser.getByteTimeDomainData(dataArray);
-
-            canvasCtx.fillStyle = '#0b0f19';
-            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-
-            canvasCtx.lineWidth = 2;
-            canvasCtx.strokeStyle = '#3b82f6';
-            canvasCtx.beginPath();
-
-            const sliceWidth = canvas.width * 1.0 / bufferLength;
-            let x = 0;
-
-            for (let i = 0; i < bufferLength; i++) {
-                const v = dataArray[i] / 128.0;
-                const y = v * canvas.height / 2;
-
-                if (i === 0) {
-                    canvasCtx.moveTo(x, y);
+            togglePlay(playState) {
+                if (playState) {
+                    if (!this.audioCtx) this.initAudio();
+                    if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+                    
+                    this.isPlaying = true;
+                    this.playBtn.textContent = '⏸️ PAUSE';
+                    this.startTimer();
                 } else {
-                    canvasCtx.lineTo(x, y);
+                    if (this.audioCtx) this.audioCtx.suspend();
+                    this.isPlaying = false;
+                    this.playBtn.textContent = '▶️ PLAY';
+                    this.stopTimer();
                 }
-
-                x += sliceWidth;
             }
 
-            canvasCtx.lineTo(canvas.width, canvas.height / 2);
-            canvasCtx.stroke();
+            stopAudio() {
+                if (this.audioCtx) this.audioCtx.suspend();
+                this.isPlaying = false;
+                this.playBtn.textContent = '▶️ PLAY';
+                this.stopTimer();
+                this.timeLeft = 600;
+                this.updateTimerDisplay();
+            }
+
+            startTimer() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                this.timerInterval = setInterval(() => {
+                    if (this.timeLeft > 0) {
+                        this.timeLeft--;
+                        this.updateTimerDisplay();
+                    } else {
+                        this.stopAudio();
+                    }
+                }, 1000);
+            }
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+            }
+
+            updateTimerDisplay() {
+                const mins = Math.floor(this.timeLeft / 60);
+                const secs = this.timeLeft % 60;
+                this.timerDisplay.textContent = ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')};
+            }
+
+            render() {
+                requestAnimationFrame(() => this.render());
+
+                this.ctx.fillStyle = '#07090e';
+                this.ctx.fillRect(0, 0, this.width, this.height);
+
+                const time = this.audioCtx && this.isPlaying ? (this.audioCtx.currentTime - this.startTime) : (Date.now() / 1000);
+                const breathValue = Math.sin(time * 2 * Math.PI * 0.1); 
+
+                const centerX = this.width / 2;
+                const centerY = this.height / 2;
+
+                // Oscilloscope Waveform
+                if (this.isPlaying && this.analyser) {
+                    const bufferLength = this.analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    this.analyser.getByteTimeDomainData(dataArray);
+
+                    this.ctx.beginPath();
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.2)';
+
+                    const sliceWidth = this.width / bufferLength;
+                    let x = 0;
+
+                    for (let i = 0; i < bufferLength; i++) {
+                        const v = dataArray[i] / 128.0;
+                        const y = (v * this.height / 5) + centerY + 35;
+
+                        if (i === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+
+                        x += sliceWidth;
+                    }
+                    this.ctx.stroke();
+                }
+
+                // Ganesha Eye Motif
+                this.drawGaneshaEye(centerX, centerY - 15, 1.0, breathValue);
+            }
+
+            drawGaneshaEye(cx, cy, scale, breathValue) {
+                const ctx = this.ctx;
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.scale(scale, scale);
+
+                const pulse = 1 + (breathValue * 0.05);
+
+                // 1. Outer Resonating Aura
+                ctx.beginPath();
+                ctx.arc(0, 0, 75 * pulse, 0, Math.PI * 2);
+                ctx.strokeStyle = rgba(212, 175, 55, ${0.12 + (breathValue * 0.04)});
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                // 2. Upper Eyelid
+                ctx.beginPath();
+                ctx.moveTo(-90, 0);
+                ctx.bezierCurveTo(-40, -45 * pulse, 40, -45 * pulse, 90, 0);
+                ctx.strokeStyle = '#d4af37';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // 3. Lower Eyelid
+                ctx.beginPath();
+                ctx.moveTo(-90, 0);
+                ctx.bezierCurveTo(-30, 20, 30, 20, 90, 0);
+                ctx.strokeStyle = '#d4af37';
+                ctx.lineWidth = 1.8;
+                ctx.stroke();
+
+                // 4. Central Focal Point (The Bindu)
+                ctx.beginPath();
+                ctx.arc(0, -2, 6 * pulse, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#d4af37';
+                ctx.shadowBlur = 16;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.restore();
+            }
         }
 
-        // Initial idle render call
-        drawVisualizer();
+        window.addEventListener('load', () => {
+            new KempEyeTranquilApp();
+        });
     </script>
 </body>
 </html>
