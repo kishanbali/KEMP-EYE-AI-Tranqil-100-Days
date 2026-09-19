@@ -3,310 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEMP EYE - Cymatics Quest · 100 Days</title>
+    <title>KEMP EYE 👁️ AI Tranquil 100 Days</title>
     <!-- PWA Manifest -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE Cymatics Quest","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#07090e","theme_color":"#0b0f19","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
-    <meta name="theme-color" content="#07090e">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#080c14","theme_color":"#111827","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+    <meta name="theme-color" content="#111827">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #07090e;
+            background-color: #080c14;
             color: #e2e8f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 16px;
         }
         .container {
-            width: 100%;
             max-width: 480px;
-            background: #0b0f19;
-            border: 1px solid #1e293b;
+            width: 100%;
+            background: #111827;
+            border: 1px solid #1f2937;
             border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+        }
+        h1 {
             text-align: center;
-        }
-        .brand-title {
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            color: #ffffff;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        .brand-sub {
-            font-size: 0.7rem;
+            font-size: 1.25rem;
             letter-spacing: 2px;
-            color: #64748b;
-            text-transform: uppercase;
             margin-bottom: 16px;
+            color: #f8fafc;
+        }
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
+            margin-top: 16px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 4px;
+        }
+        ul {
+            padding-left: 18px;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+        }
+        ul li { margin-bottom: 4px; }
+        
+        /* Day Selector Bar */
+        .days-scroll {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 8px 0;
+            margin-bottom: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: #374151 #111827;
+        }
+        .day-chip {
+            background: #151c2c;
+            border: 1px solid #374151;
+            color: #94a3b8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .day-chip.active {
+            background: #2563eb;
+            border-color: #60a5fa;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(37,99,235,0.5);
+        }
+        .day-chip:hover {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        /* Player Box */
+        .player-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .day-label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
         .eye-icon {
             font-size: 2.2rem;
-            color: #60a5fa;
-            text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
-            margin: 8px 0;
-        }
-        .day-indicator {
-            font-size: 0.8rem;
-            letter-spacing: 1.5px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
-        .day-main-title {
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            color: #f8fafc;
-            font-weight: 800;
             margin: 6px 0;
-            text-transform: uppercase;
+            color: #60a5fa;
+            text-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
         }
-        .day-desc {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-bottom: 16px;
-            line-height: 1.4;
-            padding: 0 10px;
-        }
-        .board-header {
-            font-size: 0.75rem;
-            letter-spacing: 1.5px;
-            color: #64748b;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            border-top: 1px solid #1e293b;
-            padding-top: 14px;
-        }
-        /* 10-Day Grid Layout matching Screenshot */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-        .grid-btn {
-            background: #111827;
-            border: 1px solid #334155;
-            color: #94a3b8;
-            padding: 10px 4px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
-        }
-        .grid-btn .num {
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .grid-btn .lbl {
-            font-size: 0.55rem;
-            display: block;
-            text-transform: uppercase;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .grid-btn.active {
-            background: #1d4ed8 !important;
-            border-color: #60a5fa !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
-        }
-        .grid-btn:hover {
-            background: #1e293b;
-            color: #cbd5e1;
-        }
-        /* Pagination Controls (< PREVIOUS 10 / NEXT 10 >) */
-        .pagination-controls {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-        .page-btn {
-            flex: 1;
-            background: #111827;
-            border: 1px solid #334155;
-            color: #cbd5e1;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background 0.2s;
-        }
-        .page-btn:hover {
-            background: #1e293b;
-            border-color: #475569;
-        }
-        /* Player Box */
-        .player-box {
-            background: #07090e;
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 10px;
-        }
-        .timer-display {
-            font-size: 2rem;
+        .timer {
+            font-size: 2.4rem;
             font-family: monospace;
+            margin: 12px 0;
             letter-spacing: 2px;
             color: #f8fafc;
-            margin: 8px 0;
         }
-        .action-controls {
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .btn-row {
             display: flex;
             gap: 10px;
-            justify-content: center;
         }
-        button.primary-btn {
+        button.ctrl-btn {
             background: #2563eb;
-            color: #ffffff;
+            color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
             cursor: pointer;
             flex: 1;
             transition: opacity 0.2s;
+            letter-spacing: 1px;
         }
-        button.primary-btn:hover { opacity: 0.9; }
-        .footer-note {
-            font-size: 0.65rem;
-            color: #475569;
-            margin-top: 16px;
+        button.ctrl-btn:hover { opacity: 0.9; }
+        button.ctrl-btn.stop {
+            background: #b91c1c;
+        }
+        button.ctrl-btn.repeat {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .safety-box, .privacy-box, .footer {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 14px;
             line-height: 1.4;
+            text-align: center;
         }
+        .safety-box {
+            text-align: left;
+            background: #080c14;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #1f2937;
+        }
+        .safety-box strong { color: #94a3b8; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="brand-title">KEMP EYE</div>
-        <div class="brand-sub">Cymatics Quest · 100 Days</div>
+        <h1>KEMP EYE 👁️ AI TRANQUIL 100 DAYS</h1>
         
-        <div class="eye-icon">👁️</div>
-        
-        <div class="day-indicator" id="dayIndicator">DAY 1 / 100</div>
-        <div class="day-main-title" id="dayTitle">THE FIRST PATTERN</div>
-        <div class="day-desc" id="dayDesc">A mathematical cymatics-inspired visual field.</div>
+        <div class="section-title">Before You Begin</div>
+        <ul>
+            <li>Find a comfortable position and allow your body to settle.</li>
+            <li>Place one hand, palm resting softly on your chest.</li>
+            <li>Close your eyes, or soften your gaze.</li>
+            <li>Notice your natural breathing. Don't change or control it.</li>
+            <li>Simply watch the breath as it comes and goes.</li>
+            <li>Allow the sound and guidance to be present.</li>
+            <li>Nothing to achieve. Nothing to force. Remain here.</li>
+        </ul>
 
-        <div class="board-header" id="boardHeader">CYMATICS BOARD · DAYS 1–10</div>
-        
-        <!-- 10-Day Grid -->
-        <div class="grid" id="daysGrid"></div>
+        <div class="section-title" id="dayHeader">Select Day (1 to 100)</div>
+        <div class="days-scroll" id="daysContainer"></div>
 
-        <!-- Pagination Buttons -->
-        <div class="pagination-controls">
-            <button class="page-btn" onclick="prevBlock()">◄ Previous 10</button>
-            <button class="page-btn" onclick="nextBlock()">Next 10 ►</button>
-        </div>
-
-        <!-- Player Module -->
         <div class="player-box">
-            <div class="timer-display" id="timerDisplay">10:00</div>
-            <div class="action-controls">
-                <button class="primary-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY SOUND BATH</button>
+            <div class="day-label" id="playerDayLabel">DAY 1</div>
+            <div class="eye-icon">👁️</div>
+            <div class="timer" id="timerDisplay">10:00</div>
+            
+            <div class="controls">
+                <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY</button>
+                <div class="btn-row">
+                    <button class="ctrl-btn repeat" id="repeatBtn" onclick="toggleRepeat()">🔁 REPEAT (OFF)</button>
+                    <button class="ctrl-btn stop" onclick="stopSession()">■ STOP</button>
+                </div>
             </div>
         </div>
 
-        <div class="footer-note">
-            © 2026 KishanBali / KEMP Wisdom Publications — All Rights Reserved
+        <div class="safety-box">
+            <strong>HEALTH & SAFETY:</strong> KEMP EYE 👁️ AI Tranquil is a software-based listening and embodied-awareness experience and is not medical treatment, diagnosis, psychotherapy, or a substitute for professional care. Use a comfortable listening volume. Stop if you experience pain, significant discomfort, dizziness, headache, distress, or another concerning symptom. Do not use while driving or operating machinery.
+        </div>
+
+        <div class="privacy-box">
+            PRIVATE EXPERIENCE • NO DATA COLLECTED
+        </div>
+
+        <div class="footer">
+            © 2026 KishanBali / KEMP Wisdom Publications — All Rights Reserved<br>
+            Disclaimer: This experience is provided for personal experiential use only and does not constitute medical, psychological, therapeutic, or professional advice.
         </div>
     </div>
 
     <script>
-        // Full 100 Days Database (Exact titles for 1-10, systematic harmonic titles for 11-100)
-        const allDays = [
-            { title: "THE FIRST PATTERN", sub: "A mathematical cymatics-inspired visual field." },
-            { title: "EMERGING NODES", sub: "Multiplication of harmonic intersection points." },
-            { title: "THE FIELD OPENS", sub: "Boundary expansion and spatial scaling." },
-            { title: "SHIFTING GEOMETRY", sub: "Dynamic phase shifting and morphing symmetry." },
-            { title: "THE CENTRAL FORM", sub: "Midpoint crystallization and core stabilization." },
-            { title: "INTERFERENCE", sub: "Wave superposition and complex overlay." },
-            { title: "RHYTHM & SPACE", sub: "Temporal pacing and entrainment synchronization." },
-            { title: "EXPANDING FIELD", sub: "Macro-scaling and high-frequency saturation." },
-            { title: "RETURN TO CENTER", sub: "Centripetal convergence and energy recall." },
-            { title: "NEW HARMONIC", sub: "Octave shift and cycle completion." }
-        ];
-
-        // Generate titles for Days 11 to 100
-        const themes = ["RESONANCE", "NODAL SHIFT", "HARMONIC FIELD", "WAVE MATRIX", "CYMATIC PULSE", "PHASE LOCK", "OCTAVE RISE", "COHERENCE", "SINGULARITY", "INFINITY"];
-        for (let i = 11; i <= 100; i++) {
-            let blockIdx = Math.floor((i - 1) / 10);
-            allDays.push({
-                title: ${themes[blockIdx % themes.length]} ${i},
-                sub: Advanced cymatics resonance phase ${i} of the 100-day progression.
-            });
-        }
-
         let currentDay = 1;
-        let currentBlock = 0; // 0 represents days 1-10, 1 represents days 11-20, etc.
         let isPlaying = false;
+        let isRepeating = false;
         let timeLeft = 600; // 10 minutes in seconds
         let timerInterval = null;
 
-        // Web Audio API State
+        // Web Audio API Sound Bath State
         let audioCtx = null;
         let masterGain = null;
         let activeOscillators = [];
         let ambientInterval = null;
 
-        function renderGrid() {
-            const gridEl = document.getElementById('daysGrid');
-            gridEl.innerHTML = '';
-            
-            const startIdx = currentBlock * 10;
-            const endIdx = startIdx + 10;
-
-            document.getElementById('boardHeader').innerText = CYMATICS BOARD · DAYS ${startIdx + 1}–${endIdx};
-
-            for (let i = startIdx; i < endIdx; i++) {
-                const dayNum = i + 1;
-                const data = allDays[i];
-                const btn = document.createElement('div');
-                btn.className = grid-btn ${dayNum === currentDay ? 'active' : ''};
-                btn.innerHTML = <span class="num">DAY ${dayNum}</span><span class="lbl">${data.title}</span>;
-                btn.onclick = () => selectDay(dayNum);
-                gridEl.appendChild(btn);
-            }
+        // Generate Days 1 to 100 in horizontal scroll
+        const daysContainer = document.getElementById('daysContainer');
+        for (let i = 1; i <= 100; i++) {
+            const chip = document.createElement('div');
+            chip.className = day-chip ${i === 1 ? 'active' : ''};
+            chip.id = day-chip-${i};
+            chip.innerText = i;
+            chip.onclick = () => selectDay(i);
+            daysContainer.appendChild(chip);
         }
 
         function selectDay(day) {
+            document.getElementById(day-chip-${currentDay}).classList.remove('active');
             currentDay = day;
-            const data = allDays[day - 1];
+            document.getElementById(day-chip-${currentDay}).classList.add('active');
+            document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
+            
+            // Scroll selected chip into view smoothly
+            document.getElementById(day-chip-${currentDay}).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
-            document.getElementById('dayIndicator').innerText = DAY ${day} / 100;
-            document.getElementById('dayTitle').innerText = data.title;
-            document.getElementById('dayDesc').innerText = data.sub;
-
-            // Reset timer on day change
             timeLeft = 600;
             updateTimerDisplay();
-
-            renderGrid();
 
             if (isPlaying) {
                 stopSoundBath();
                 startSoundBath();
             }
-        }
-
-        function nextBlock() {
-            currentBlock = (currentBlock + 1) % 10;
-            renderGrid();
-        }
-
-        function prevBlock() {
-            currentBlock = (currentBlock - 1 + 10) % 10;
-            renderGrid();
         }
 
         function updateTimerDisplay() {
@@ -317,121 +262,140 @@
         }
 
         function togglePlay() {
-            const playBtn = document.getElementById('playBtn');
-
+            const playBtn = id => document.getElementById(id);
             if (!isPlaying) {
+                startSoundBath();
+            } else {
+                pauseSoundBath();
+            }
+        }
+
+        function startSoundBath() {
+            try {
                 if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContext();
                 }
                 if (audioCtx.state === 'suspended') {
                     audioCtx.resume();
                 }
 
-                startSoundBath();
-                isPlaying = true;
-                playBtn.innerText = '⏸️ PAUSE SOUND BATH';
+                masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+                masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2.0);
+                masterGain.connect(audioCtx.destination);
 
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        updateTimerDisplay();
-                    } else {
-                        // Auto advance to next day when timer hits zero
-                        if (currentDay < 100) selectDay(currentDay + 1);
-                        else selectDay(1);
-                    }
-                }, 1000);
-            } else {
-                stopSoundBath();
-                isPlaying = false;
-                playBtn.innerText = '▶️ RESUME SOUND BATH';
-                clearInterval(timerInterval); // Pauses timer exactly where it is without reset
+                // Sound Bath frequencies: Singing bowl fundamental + overtone scaled by day
+                const baseFreq = 108 + ((currentDay - 1) * 1.5);
+
+                // 1. Singing Bowl Fundamental
+                const bowlOsc = audioCtx.createOscillator();
+                const bowlGain = audioCtx.createGain();
+                bowlOsc.type = 'sine';
+                bowlOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+                bowlGain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                bowlOsc.connect(bowlGain);
+                bowlGain.connect(masterGain);
+                bowlOsc.start();
+                activeOscillators.push(bowlOsc);
+
+                // 2. Tuning Fork Harmonic
+                const forkOsc = audioCtx.createOscillator();
+                const forkGain = audioCtx.createGain();
+                forkOsc.type = 'triangle';
+                forkOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime);
+                forkGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                forkOsc.connect(forkGain);
+                forkGain.connect(masterGain);
+                forkOsc.start();
+                activeOscillators.push(forkOsc);
+
+                // 3. Ambient Chime / Handpan texturing
+                triggerChime(baseFreq);
+                ambientInterval = setInterval(() => {
+                    triggerChime(baseFreq);
+                }, 7000);
+
+                isPlaying = true;
+                document.getElementById('playBtn').innerText = '⏸️ PAUSE';
+
+                if (!timerInterval) {
+                    timerInterval = setInterval(() => {
+                        if (timeLeft > 0) {
+                            timeLeft--;
+                            updateTimerDisplay();
+                        } else {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                            if (isRepeating) {
+                                timeLeft = 600;
+                                updateTimerDisplay();
+                                startSoundBath();
+                            } else {
+                                stopSession();
+                            }
+                        }
+                    }, 1000);
+                }
+            } catch (e) {
+                console.error("Audio playback error:", e);
+                alert("Please tap Play again to activate audio.");
             }
         }
 
-        function startSoundBath() {
-            if (!audioCtx) return;
-
-            masterGain = audioCtx.createGain();
-            masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-            masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2);
-            masterGain.connect(audioCtx.destination);
-
-            const baseFreq = 108 + ((currentDay - 1) * 0.35);
-
-            // Fundamental Singing Bowl Oscillator
-            const bowlOsc = audioCtx.createOscillator();
-            const bowlGain = audioCtx.createGain();
-            bowlOsc.type = 'sine';
-            bowlOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
-            bowlGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            bowlOsc.connect(bowlGain);
-            bowlGain.connect(masterGain);
-            bowlOsc.start();
-            activeOscillators.push(bowlOsc);
-
-            // Harmonic Overtone
-            const forkOsc = audioCtx.createOscillator();
-            const forkGain = audioCtx.createGain();
-            forkOsc.type = 'triangle';
-            forkOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime);
-            forkGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-            forkOsc.connect(forkGain);
-            forkGain.connect(masterGain);
-            forkOsc.start();
-            activeOscillators.push(forkOsc);
-
-            // Ambient Textures
-            triggerAcousticTexture(baseFreq);
-            ambientInterval = setInterval(() => {
-                triggerAcousticTexture(baseFreq);
-            }, 6000);
-        }
-
-        function triggerAcousticTexture(baseFreq) {
+        function triggerChime(baseFreq) {
             if (!audioCtx || !isPlaying) return;
-
             const t = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            const multipliers = [2.0, 2.76, 3.4, 4.1, 5.2];
-            const randomMult = multipliers[Math.floor(Math.random() * multipliers.length)];
+            const mults = [2.0, 2.76, 3.4, 4.1];
+            const m = mults[Math.floor(Math.random() * mults.length)];
 
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(baseFreq * randomMult, t);
-
+            osc.frequency.setValueAtTime(baseFreq * m, t);
             gain.gain.setValueAtTime(0.0, t);
-            gain.gain.linearRampToValueAtTime(0.045, t + 0.1); 
-            gain.gain.exponentialRampToValueAtTime(0.0001, t + 4.0); 
+            gain.gain.linearRampToValueAtTime(0.04, t + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
 
             osc.connect(gain);
             gain.connect(masterGain);
-
             osc.start(t);
-            osc.stop(t + 4.1);
+            osc.stop(t + 4.6);
         }
 
-        function stopSoundBath() {
-            if (ambientInterval) clearInterval(ambientInterval);
+        function pauseSoundBath() {
             if (masterGain && audioCtx) {
-                masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+                masterGain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
                 setTimeout(() => {
-                    activeOscillators.forEach(osc => {
-                        try { osc.stop(); osc.disconnect(); } catch(e){}
-                    });
+                    activeOscillators.forEach(o => { try { o.stop(); o.disconnect(); } catch(e){} });
                     activeOscillators = [];
-                }, 1100);
+                }, 900);
             }
+            if (ambientInterval) clearInterval(ambientInterval);
+            isPlaying = false;
+            document.getElementById('playBtn').innerText = '▶️ PLAY';
+            clearInterval(timerInterval);
+            timerInterval = null;
         }
 
-        // Initialize initial grid view
-        renderGrid();
+        function stopSession() {
+            pauseSoundBath();
+            timeLeft = 600;
+            updateTimerDisplay();
+        }
 
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            const swCode = self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });;
-            const blob = new Blob([swCode], {type: 'text/javascript'});
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        function toggleRepeat() {
+            isRepeating = !isRepeating;
+            const btn = document.getElementById('repeatBtn');
+            if (isRepeating) {
+                btn.innerText = '🔁 REPEAT (ON)';
+                btn.style.borderColor = '#60a5fa';
+                btn.style.color = '#60a5fa';
+            } else {
+                btn.innerText = '🔁 REPEAT (OFF)';
+                btn.style.borderColor = '#334155';
+                btn.style.color = '#94a3b8';
+            }
         }
     </script>
 </body>
