@@ -60,42 +60,55 @@
         }
         ul li { margin-bottom: 3px; }
         
-        /* 1-100 Grid Styling */
+        /* 1-100 Day Cards Grid Styling */
         .grid-container {
             max-height: 220px;
             overflow-y: auto;
             border: 1px solid #374151;
-            border-radius: 8px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 10px;
             background: #0b0f19;
             margin: 10px 0;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
         }
-        .grid-btn {
-            background: #1f2937;
-            border: 1px solid #4b5563;
+        .day-card {
+            background: #151c2c;
+            border: 1px solid #2a3447;
             color: #cbd5e1;
-            padding: 8px 0;
+            padding: 10px 4px;
             text-align: center;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
-        .grid-btn.active {
+        .day-card .card-num {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #94a3b8;
+        }
+        .day-card .card-label {
+            font-size: 0.6rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .day-card.active {
             background: #2563eb !important;
-            color: white !important;
             border-color: #60a5fa !important;
-            box-shadow: 0 0 8px rgba(37,99,235,0.6);
+            box-shadow: 0 0 12px rgba(37,99,235,0.6);
         }
-        .grid-btn:hover {
-            background: #374151;
+        .day-card.active .card-num,
+        .day-card.active .card-label {
+            color: #ffffff !important;
+        }
+        .day-card:hover {
+            background: #1e293b;
+            border-color: #3b82f6;
         }
 
         .player-box {
@@ -173,7 +186,7 @@
             <li>Nothing to achieve. Nothing to force. Remain here.</li>
         </ul>
 
-        <div class="section-title" id="currentDayHeader">Day 1 / 100</div>
+        <div class="section-title" id="currentDayHeader">Select Day (1 to 100)</div>
         <div class="grid-container">
             <div class="grid" id="daysGrid"></div>
         </div>
@@ -214,27 +227,31 @@
         let activeOscillators = [];
         let ambientInterval = null;
 
-        // Build 100 Days Grid Dynamically (1 to 100)
+        // Build 100 Days Card Grid Dynamically (1 to 100)
         const gridEl = document.getElementById('daysGrid');
         for (let i = 1; i <= 100; i++) {
-            const btn = document.createElement('div');
-            btn.className = grid-btn ${i === 1 ? 'active' : ''};
-            btn.innerText = i;
-            btn.id = day-btn-${i};
-            btn.onclick = () => selectDay(i);
-            gridEl.appendChild(btn);
+            const card = document.createElement('div');
+            card.className = day-card ${i === 1 ? 'active' : ''};
+            card.id = day-card-${i};
+            card.innerHTML = <div class="card-num">${i}</div><div class="card-label">Day</div>;
+            card.onclick = () => selectDay(i);
+            gridEl.appendChild(card);
         }
 
         function selectDay(day) {
-            // Update active styling on grid
-            document.getElementById(day-btn-${currentDay}).classList.remove('active');
+            // Update active styling on grid cards
+            document.getElementById(day-card-${currentDay}).classList.remove('active');
             currentDay = day;
-            document.getElementById(day-btn-${currentDay}).classList.add('active');
+            document.getElementById(day-card-${currentDay}).classList.add('active');
             
             document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
             document.getElementById('currentDayHeader').innerText = Day ${currentDay} / 100;
             
-            // If playing, restart audio soundscape to match the new day's frequency scaling
+            // Reset timer to full 10 minutes when switching days
+            timeLeft = 600;
+            updateTimerDisplay();
+
+            // If audio was playing, restart soundscape with new day's frequency
             if (isPlaying) {
                 stopSoundBath();
                 startSoundBath();
@@ -244,8 +261,6 @@
         function nextDay() {
             let next = currentDay + 1;
             if (next > 100) next = 1;
-            timeLeft = 600; // Reset timer for new day
-            updateTimerDisplay();
             selectDay(next);
         }
 
@@ -260,7 +275,7 @@
             const playBtn = document.getElementById('playBtn');
             
             if (!isPlaying) {
-                // Initialize or Resume AudioContext
+                // Initialize or Resume AudioContext on user click
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
