@@ -3,544 +3,305 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEMP EYE 👁️ AI Tranquil 100 days</title>
-    
-    <!-- Self-Contained PWA Manifest Data URI -->
-    <link rel="manifest" href='data:application/manifest+json;charset=utf-8,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":"./index.html","display":"standalone","background_color":"%2307090e","theme_color":"%2307090e"}'>
-    <meta name="theme-color" content="#07090e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <title>KEMP EYE 👁️ AI Tranquil</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body, html {
-            width: 100%;
-            height: 100%;
-            background-color: #07090e;
-            color: #d4af37;
+        body {
+            background-color: #080c14;
+            color: #e2e8f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow-x: hidden;
+            margin: 0;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-
-        /* Guidance Overlay Screen */
-        #guidance-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .container {
+            max-width: 460px;
             width: 100%;
-            height: 100%;
-            background: rgba(7, 9, 14, 0.98);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
             padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        }
+        h1 {
             text-align: center;
-            transition: opacity 0.5s ease;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #f8fafc;
         }
-        #guidance-screen h2 {
-            font-size: 13px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            color: #d4af37;
-        }
-        .guidance-box {
-            max-width: 440px;
-            font-size: 13px;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* App Container */
-        #app-container {
-            width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 18px;
-            position: relative;
-        }
-
-        header {
+        .eye-icon {
             text-align: center;
-            margin-top: 8px;
-            margin-bottom: 14px;
+            font-size: 2.5rem;
+            margin: 10px 0;
+            color: #60a5fa;
+            text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
         }
-        header h1 {
-            font-size: 14px;
-            letter-spacing: 2.5px;
+        .section-title {
+            font-size: 0.8rem;
             text-transform: uppercase;
-            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 4px;
         }
-
-        /* Day Grid Selector (1-12) */
-        .day-progress-label {
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(212, 175, 55, 0.7);
-            margin-bottom: 6px;
+        ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #cbd5e1;
         }
-        .day-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-            width: 100%;
-            margin-bottom: 14px;
-        }
-        .day-btn {
-            background: rgba(212, 175, 55, 0.04);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            color: #d4af37;
-            padding: 7px 0;
-            font-size: 11px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .day-btn.active {
-            background: #d4af37;
-            color: #07090e;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-        }
-
-        .active-day-title {
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        ul li {
             margin-bottom: 4px;
         }
-
-        /* Canvas Viewport */
-        .canvas-container {
-            width: 100%;
-            height: 220px;
-            position: relative;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin: 12px 0;
         }
-        canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* Play Controls & Timer */
-        .control-panel {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .timer-display {
-            font-size: 18px;
-            letter-spacing: 3px;
-            font-variant-numeric: tabular-nums;
-            color: #ffffff;
-        }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-        button.action-btn {
-            flex: 1;
-            background: rgba(7, 9, 14, 0.9);
-            border: 1px solid #d4af37;
-            color: #d4af37;
-            padding: 11px 16px;
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        .grid-btn {
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #cbd5e1;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 0.85rem;
             cursor: pointer;
-            border-radius: 25px;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
-        button.action-btn:hover {
-            background: #d4af37;
-            color: #07090e;
+        .grid-btn.active, .grid-btn:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #60a5fa;
         }
-
-        /* Health & Safety / Footnotes */
-        .info-section {
-            width: 100%;
-            font-size: 9.5px;
-            line-height: 1.55;
-            color: rgba(255, 255, 255, 0.48);
-            border-top: 1px solid rgba(212, 175, 55, 0.15);
-            padding-top: 12px;
-            margin-bottom: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .player-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
         }
-        .info-section h3 {
-            font-size: 9.5px;
+        .day-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 1px;
+        }
+        .timer {
+            font-size: 2rem;
+            font-family: monospace;
+            margin: 12px 0;
             letter-spacing: 2px;
-            color: #d4af37;
-            text-transform: uppercase;
+            color: #f8fafc;
         }
-        .privacy-badge {
-            text-align: center;
-            font-size: 8.5px;
-            letter-spacing: 2.5px;
-            color: rgba(212, 175, 55, 0.75);
-            margin-bottom: 10px;
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
-        footer {
+        button.ctrl-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.ctrl-btn:hover {
+            opacity: 0.9;
+        }
+        button.ctrl-btn.stop {
+            background: #dc2626;
+        }
+        button.ctrl-btn.repeat {
+            background: #334155;
+            color: #cbd5e1;
+            border: 1px solid #475569;
+        }
+        button.ctrl-btn.repeat.active {
+            background: #059669;
+            color: white;
+            border-color: #10b981;
+        }
+        .safety-box, .privacy-box, .footer {
+            font-size: 0.73rem;
+            color: #64748b;
+            margin-top: 18px;
+            line-height: 1.4;
             text-align: center;
-            font-size: 8.5px;
-            color: rgba(255, 255, 255, 0.35);
-            line-height: 1.45;
-            padding-bottom: 16px;
+        }
+        .safety-box {
+            text-align: left;
+            background: #0b0f19;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+        .safety-box strong {
+            color: #94a3b8;
         }
     </style>
 </head>
 <body>
-
-    <!-- Guidance Screen Overlay -->
-    <div id="guidance-screen">
-        <h2>Before You Begin</h2>
-        <div class="guidance-box">
-            <p>Find a comfortable position and allow your body to settle.</p>
-            <p>Place one hand, palm resting softly on your chest.</p>
-            <p>Close your eyes, or soften your gaze.</p>
-            <p>Notice your natural breathing. Don't change or control it.</p>
-            <p>Simply watch the breath as it comes and goes.</p>
-            <p>Allow the sound and guidance to be present.</p>
-            <p><strong>Nothing to achieve. Nothing to force. Remain here.</strong></p>
-        </div>
-        <button class="action-btn" id="enter-btn" style="max-width: 220px;">Enter Experience</button>
-    </div>
-
-    <!-- Main PWA App Interface -->
-    <div id="app-container">
-        <header>
-            <h1>KEMP EYE 👁️ AI Tranquil 100 days</h1>
-        </header>
-
-        <div class="day-progress-label">DAY 1 / 100</div>
+    <div class="container">
+        <h1>KEMP EYE 👁️ AI TRANQUIL</h1>
         
-        <!-- Day Grid 1 to 12 -->
-        <div class="day-grid" id="day-grid"></div>
+        <div class="section-title">Before You Begin</div>
+        <ul>
+            <li>Find a comfortable position and allow your body to settle.</li>
+            <li>Place one hand, palm resting softly on your chest.</li>
+            <li>Close your eyes, or soften your gaze.</li>
+            <li>Notice your natural breathing. Don't change or control it.</li>
+            <li>Simply watch the breath as it comes and goes.</li>
+            <li>Allow the sound and guidance to be present.</li>
+            <li>Nothing to achieve. Nothing to force. Remain here.</li>
+        </ul>
 
-        <div class="active-day-title" id="active-day-title">DAY 1</div>
-
-        <!-- Canvas for Ganesha Eye & Oscilloscope Waveform -->
-        <div class="canvas-container">
-            <canvas id="canvas"></canvas>
+        <div class="section-title">Day 1 / 100</div>
+        <div class="grid">
+            <div class="grid-btn active">1</div>
+            <div class="grid-btn">2</div>
+            <div class="grid-btn">3</div>
+            <div class="grid-btn">4</div>
+            <div class="grid-btn">5</div>
+            <div class="grid-btn">6</div>
+            <div class="grid-btn">7</div>
+            <div class="grid-btn">8</div>
+            <div class="grid-btn">9</div>
+            <div class="grid-btn">10</div>
+            <div class="grid-btn">11</div>
+            <div class="grid-btn">12</div>
         </div>
 
-        <!-- Play Controls & Timer -->
-        <div class="control-panel">
-            <div class="timer-display" id="timer-display">10:00</div>
-            <div class="btn-group">
-                <button class="action-btn" id="play-btn">▶️ PLAY</button>
-                <button class="action-btn" id="stop-btn">■ STOP</button>
+        <div class="player-box">
+            <div class="day-label">DAY 1</div>
+            <div class="eye-icon">👁️</div>
+            <div class="timer" id="timerDisplay">10:00</div>
+            <div class="controls">
+                <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY</button>
+                <button class="ctrl-btn repeat" id="repeatBtn" onclick="toggleRepeat()">🔁 REPEAT</button>
+                <button class="ctrl-btn stop" onclick="stopSession()">■ STOP</button>
             </div>
         </div>
 
-        <div class="privacy-badge">PRIVATE EXPERIENCE &nbsp;•&nbsp; NO DATA COLLECTED</div>
-
-        <!-- Health & Safety / Footnotes -->
-        <div class="info-section">
-            <h3>Health & Safety</h3>
-            <p>KEMP EYE 👁️ AI Tranquil is a software-based listening and embodied-awareness experience and is not medical treatment, diagnosis, psychotherapy, or a substitute for professional care. Use a comfortable listening volume. Stop if you experience pain, significant discomfort, dizziness, headache, distress, or another concerning symptom. Do not use while driving or operating machinery.</p>
+        <div class="safety-box">
+            <strong>HEALTH & SAFETY:</strong> KEMP EYE 👁️ AI Tranquil is a software-based listening and embodied-awareness experience and is not medical treatment, diagnosis, psychotherapy, or a substitute for professional care. Use a comfortable listening volume. Stop if you experience pain, significant discomfort, dizziness, headache, distress, or another concerning symptom. Do not use while driving or operating machinery.
         </div>
 
-        <footer>
-            <p>©2026 KishanBali/KEMP Wisdom Publications — All Rights Reserved</p>
-            <p style="margin-top: 3px;">Disclaimer: This experience is provided for personal experiential use only and does not constitute medical, psychological, therapeutic, or professional advice.</p>
-        </footer>
+        <div class="privacy-box">
+            🔒 PRIVATE EXPERIENCE • NO DATA COLLECTED
+        </div>
+
+        <div class="footer">
+            © 2026 KishanBali / KEMP Wisdom Publications — All Rights Reserved<br>
+            Disclaimer: This experience is provided for personal experiential use only and does not constitute medical, psychological, therapeutic, or professional advice.
+        </div>
     </div>
 
     <script>
-        // Register Self-Contained Service Worker via Blob for PWA offline capability
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', e => e.waitUntil(self.skipWaiting()));
-                self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
-                self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-            `;
-            const blob = new Blob([swCode], { type: 'text/javascript' });
-            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        let isPlaying = false;
+        let isRepeat = false;
+        let timeLeft = 600; // 10 minutes in seconds
+        let timerInterval = null;
+        let audioCtx = null;
+        let oscillator = null;
+        let gainNode = null;
+
+        function updateTimerDisplay() {
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            document.getElementById('timerDisplay').innerText = 
+                (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
         }
 
-        class KempEyeTranquilApp {
-            constructor() {
-                this.canvas = document.getElementById('canvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.playBtn = document.getElementById('play-btn');
-                this.stopBtn = document.getElementById('stop-btn');
-                this.enterBtn = document.getElementById('enter-btn');
-                this.guidanceScreen = document.getElementById('guidance-screen');
-                this.timerDisplay = document.getElementById('timer-display');
-                this.activeDayTitle = document.getElementById('active-day-title');
-
-                this.isPlaying = false;
-                this.audioCtx = null;
-                this.analyser = null;
-                this.startTime = 0;
-                this.selectedDay = 1;
-                this.timerInterval = null;
-                this.timeLeft = 600; // 10 minutes
-
-                this.initGrid();
-                this.resizeCanvas();
-                window.addEventListener('resize', () => this.resizeCanvas());
-
-                this.enterBtn.addEventListener('click', () => {
-                    this.guidanceScreen.style.opacity = '0';
-                    setTimeout(() => { this.guidanceScreen.style.display = 'none'; }, 500);
-                });
-
-                this.playBtn.addEventListener('click', () => this.togglePlay(true));
-                this.stopBtn.addEventListener('click', () => this.stopAudio());
-
-                this.render();
-            }
-
-            initGrid() {
-                const grid = document.getElementById('day-grid');
-                for (let i = 1; i <= 12; i++) {
-                    const btn = document.createElement('button');
-                    btn.className = day-btn ${i === 1 ? 'active' : ''};
-                    btn.textContent = i;
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.selectedDay = i;
-                        this.activeDayTitle.textContent = DAY ${i};
-                    });
-                    grid.appendChild(btn);
-                }
-            }
-
-            resizeCanvas() {
-                const rect = this.canvas.parentElement.getBoundingClientRect();
-                this.width = rect.width;
-                this.height = rect.height;
-                this.canvas.width = this.width * window.devicePixelRatio;
-                this.canvas.height = this.height * window.devicePixelRatio;
-                this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-            }
-
-            initAudio() {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                this.audioCtx = new AudioContext();
-
-                this.masterGain = this.audioCtx.createGain();
-                this.masterGain.gain.setValueAtTime(0.25, this.audioCtx.currentTime);
-
-                this.analyser = this.audioCtx.createAnalyser();
-                this.analyser.fftSize = 2048;
-
-                this.filter = this.audioCtx.createBiquadFilter();
-                this.filter.type = 'lowpass';
-                this.filter.frequency.setValueAtTime(400, this.audioCtx.currentTime);
-
-                this.filter.connect(this.masterGain);
-                this.masterGain.connect(this.analyser);
-                this.analyser.connect(this.audioCtx.destination);
-
-                // 0.1Hz Breath LFO
-                this.breathLFO = this.audioCtx.createOscillator();
-                this.breathLFO.type = 'sine';
-                this.breathLFO.frequency.setValueAtTime(0.1, this.audioCtx.currentTime);
-
-                this.lfoGain = this.audioCtx.createGain();
-                this.lfoGain.gain.setValueAtTime(300, this.audioCtx.currentTime);
-
-                this.breathLFO.connect(this.lfoGain);
-                this.lfoGain.connect(this.filter.frequency);
-                this.breathLFO.start();
-
-                // Crystal Bowl Root (110Hz A2 + day variance)
-                this.bowlOsc = this.audioCtx.createOscillator();
-                this.bowlOsc.type = 'sine';
-                this.bowlOsc.frequency.setValueAtTime(110 + (this.selectedDay * 2), this.audioCtx.currentTime);
-                
-                this.bowlGain = this.audioCtx.createGain();
-                this.bowlGain.gain.setValueAtTime(0.2, this.audioCtx.currentTime);
-                
-                this.bowlOsc.connect(this.bowlGain);
-                this.bowlGain.connect(this.filter);
-                this.bowlOsc.start();
-
-                // Sub-Bass Layer
-                this.subOsc = this.audioCtx.createOscillator();
-                this.subOsc.type = 'triangle';
-                this.subOsc.frequency.setValueAtTime(55, this.audioCtx.currentTime);
-
-                this.subGain = this.audioCtx.createGain();
-                this.subGain.gain.setValueAtTime(0.12, this.audioCtx.currentTime);
-
-                this.subOsc.connect(this.subGain);
-                this.subGain.connect(this.filter);
-                this.subOsc.start();
-
-                this.startTime = this.audioCtx.currentTime;
-            }
-
-            togglePlay(playState) {
-                if (playState) {
-                    if (!this.audioCtx) this.initAudio();
-                    if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-                    
-                    this.isPlaying = true;
-                    this.playBtn.textContent = '⏸️ PAUSE';
-                    this.startTimer();
-                } else {
-                    if (this.audioCtx) this.audioCtx.suspend();
-                    this.isPlaying = false;
-                    this.playBtn.textContent = '▶️ PLAY';
-                    this.stopTimer();
-                }
-            }
-
-            stopAudio() {
-                if (this.audioCtx) this.audioCtx.suspend();
-                this.isPlaying = false;
-                this.playBtn.textContent = '▶️ PLAY';
-                this.stopTimer();
-                this.timeLeft = 600;
-                this.updateTimerDisplay();
-            }
-
-            startTimer() {
-                if (this.timerInterval) clearInterval(this.timerInterval);
-                this.timerInterval = setInterval(() => {
-                    if (this.timeLeft > 0) {
-                        this.timeLeft--;
-                        this.updateTimerDisplay();
+        function togglePlay() {
+            const playBtn = document.getElementById('playBtn');
+            if (!isPlaying) {
+                startAudio();
+                isPlaying = true;
+                playBtn.innerText = '⏸️ PAUSE';
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
                     } else {
-                        this.stopAudio();
+                        if (isRepeat) {
+                            timeLeft = 600;
+                        } else {
+                            stopSession();
+                        }
                     }
                 }, 1000);
-            }
-
-            stopTimer() {
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-            }
-
-            updateTimerDisplay() {
-                const mins = Math.floor(this.timeLeft / 60);
-                const secs = this.timeLeft % 60;
-                this.timerDisplay.textContent = ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')};
-            }
-
-            render() {
-                requestAnimationFrame(() => this.render());
-
-                this.ctx.fillStyle = '#07090e';
-                this.ctx.fillRect(0, 0, this.width, this.height);
-
-                const time = this.audioCtx && this.isPlaying ? (this.audioCtx.currentTime - this.startTime) : (Date.now() / 1000);
-                const breathValue = Math.sin(time * 2 * Math.PI * 0.1); 
-
-                const centerX = this.width / 2;
-                const centerY = this.height / 2;
-
-                // Oscilloscope Waveform
-                if (this.isPlaying && this.analyser) {
-                    const bufferLength = this.analyser.frequencyBinCount;
-                    const dataArray = new Uint8Array(bufferLength);
-                    this.analyser.getByteTimeDomainData(dataArray);
-
-                    this.ctx.beginPath();
-                    this.ctx.lineWidth = 1.5;
-                    this.ctx.strokeStyle = 'rgba(212, 175, 55, 0.2)';
-
-                    const sliceWidth = this.width / bufferLength;
-                    let x = 0;
-
-                    for (let i = 0; i < bufferLength; i++) {
-                        const v = dataArray[i] / 128.0;
-                        const y = (v * this.height / 5) + centerY + 35;
-
-                        if (i === 0) this.ctx.moveTo(x, y);
-                        else this.ctx.lineTo(x, y);
-
-                        x += sliceWidth;
-                    }
-                    this.ctx.stroke();
-                }
-
-                // Ganesha Eye Motif
-                this.drawGaneshaEye(centerX, centerY - 15, 1.0, breathValue);
-            }
-
-            drawGaneshaEye(cx, cy, scale, breathValue) {
-                const ctx = this.ctx;
-                ctx.save();
-                ctx.translate(cx, cy);
-                ctx.scale(scale, scale);
-
-                const pulse = 1 + (breathValue * 0.05);
-
-                // 1. Outer Resonating Aura
-                ctx.beginPath();
-                ctx.arc(0, 0, 75 * pulse, 0, Math.PI * 2);
-                ctx.strokeStyle = rgba(212, 175, 55, ${0.12 + (breathValue * 0.04)});
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // 2. Upper Eyelid
-                ctx.beginPath();
-                ctx.moveTo(-90, 0);
-                ctx.bezierCurveTo(-40, -45 * pulse, 40, -45 * pulse, 90, 0);
-                ctx.strokeStyle = '#d4af37';
-                ctx.lineWidth = 3;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-
-                // 3. Lower Eyelid
-                ctx.beginPath();
-                ctx.moveTo(-90, 0);
-                ctx.bezierCurveTo(-30, 20, 30, 20, 90, 0);
-                ctx.strokeStyle = '#d4af37';
-                ctx.lineWidth = 1.8;
-                ctx.stroke();
-
-                // 4. Central Focal Point (The Bindu)
-                ctx.beginPath();
-                ctx.arc(0, -2, 6 * pulse, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.shadowColor = '#d4af37';
-                ctx.shadowBlur = 16;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-
-                ctx.restore();
+            } else {
+                pauseAudio();
+                isPlaying = false;
+                playBtn.innerText = '▶️ PLAY';
+                clearInterval(timerInterval);
             }
         }
 
-        window.addEventListener('load', () => {
-            new KempEyeTranquilApp();
-        });
+        function toggleRepeat() {
+            isRepeat = !isRepeat;
+            const repeatBtn = document.getElementById('repeatBtn');
+            if (isRepeat) {
+                repeatBtn.classList.add('active');
+            } else {
+                repeatBtn.classList.remove('active');
+            }
+        }
+
+        function stopSession() {
+            pauseAudio();
+            isPlaying = false;
+            document.getElementById('playBtn').innerText = '▶️ PLAY';
+            clearInterval(timerInterval);
+            timeLeft = 600;
+            updateTimerDisplay();
+        }
+
+        function startAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            // Gentle ambient frequency synthesis (112Hz resonance)
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(112, audioCtx.currentTime);
+            
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 3); // Smooth fade in
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            oscillator.start();
+        }
+
+        function pauseAudio() {
+            if (oscillator && audioCtx) {
+                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+                setTimeout(() => {
+                    try { oscillator.stop(); oscillator.disconnect(); } catch(e){}
+                    oscillator = null;
+                }, 1000);
+            }
+        }
     </script>
 </body>
 </html>
