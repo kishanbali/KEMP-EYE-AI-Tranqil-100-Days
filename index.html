@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEMP EYE 👁️ AI Tranquil</title>
+    <title>KEMP EYE 👁️ AI Tranquil 100 Days</title>
+    <!-- PWA Manifest Data URI -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#080c14","theme_color":"#111827","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+    <meta name="theme-color" content="#111827">
     <style>
         body {
             background-color: #080c14;
@@ -26,9 +29,9 @@
         }
         h1 {
             text-align: center;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: #f8fafc;
         }
         .eye-icon {
@@ -39,11 +42,11 @@
             text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
         }
         .section-title {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: #94a3b8;
-            margin-top: 20px;
+            margin-top: 16px;
             margin-bottom: 8px;
             border-bottom: 1px solid #1f2937;
             padding-bottom: 4px;
@@ -51,27 +54,35 @@
         ul {
             margin: 0;
             padding-left: 18px;
-            font-size: 0.88rem;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            line-height: 1.5;
             color: #cbd5e1;
         }
         ul li {
-            margin-bottom: 4px;
+            margin-bottom: 3px;
+        }
+        .grid-container {
+            max-height: 140px;
+            overflow-y: auto;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 6px;
+            background: #0b0f19;
+            margin: 10px 0;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
-            margin: 12px 0;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
         }
         .grid-btn {
             background: #1f2937;
             border: 1px solid #374151;
             color: #cbd5e1;
-            padding: 10px 0;
+            padding: 6px 0;
             text-align: center;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -84,9 +95,9 @@
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 16px;
         }
         .day-label {
             font-size: 0.85rem;
@@ -97,55 +108,45 @@
         .timer {
             font-size: 2rem;
             font-family: monospace;
-            margin: 12px 0;
+            margin: 10px 0;
             letter-spacing: 2px;
             color: #f8fafc;
         }
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
         }
         button.ctrl-btn {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px 16px;
+            padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: opacity 0.2s;
         }
         button.ctrl-btn:hover {
             opacity: 0.9;
         }
-        button.ctrl-btn.stop {
-            background: #dc2626;
-        }
-        button.ctrl-btn.repeat {
+        button.ctrl-btn.next {
             background: #334155;
-            color: #cbd5e1;
             border: 1px solid #475569;
         }
-        button.ctrl-btn.repeat.active {
-            background: #059669;
-            color: white;
-            border-color: #10b981;
-        }
         .safety-box, .privacy-box, .footer {
-            font-size: 0.73rem;
+            font-size: 0.7rem;
             color: #64748b;
-            margin-top: 18px;
+            margin-top: 14px;
             line-height: 1.4;
             text-align: center;
         }
         .safety-box {
             text-align: left;
             background: #0b0f19;
-            padding: 12px;
+            padding: 10px;
             border-radius: 8px;
             border: 1px solid #1e293b;
         }
@@ -169,30 +170,18 @@
             <li>Nothing to achieve. Nothing to force. Remain here.</li>
         </ul>
 
-        <div class="section-title">Day 1 / 100</div>
-        <div class="grid">
-            <div class="grid-btn active">1</div>
-            <div class="grid-btn">2</div>
-            <div class="grid-btn">3</div>
-            <div class="grid-btn">4</div>
-            <div class="grid-btn">5</div>
-            <div class="grid-btn">6</div>
-            <div class="grid-btn">7</div>
-            <div class="grid-btn">8</div>
-            <div class="grid-btn">9</div>
-            <div class="grid-btn">10</div>
-            <div class="grid-btn">11</div>
-            <div class="grid-btn">12</div>
+        <div class="section-title" id="currentDayHeader">Day 1 / 100</div>
+        <div class="grid-container">
+            <div class="grid" id="daysGrid"></div>
         </div>
 
         <div class="player-box">
-            <div class="day-label">DAY 1</div>
+            <div class="day-label" id="playerDayLabel">DAY 1</div>
             <div class="eye-icon">👁️</div>
             <div class="timer" id="timerDisplay">10:00</div>
             <div class="controls">
                 <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY</button>
-                <button class="ctrl-btn repeat" id="repeatBtn" onclick="toggleRepeat()">🔁 REPEAT</button>
-                <button class="ctrl-btn stop" onclick="stopSession()">■ STOP</button>
+                <button class="ctrl-btn next" onclick="nextDay()">⏭️ NEXT DAY</button>
             </div>
         </div>
 
@@ -211,13 +200,47 @@
     </div>
 
     <script>
+        let currentDay = 1;
         let isPlaying = false;
-        let isRepeat = false;
-        let timeLeft = 600; // 10 minutes in seconds
+        let timeLeft = 600; // 10 minutes
         let timerInterval = null;
+
+        // Web Audio API State
         let audioCtx = null;
-        let oscillator = null;
-        let gainNode = null;
+        let masterGain = null;
+        let activeOscillators = [];
+        let ambientInterval = null;
+
+        // Initialize 100 Days Grid
+        const gridEl = document.getElementById('daysGrid');
+        for (let i = 1; i <= 100; i++) {
+            const btn = document.createElement('div');
+            btn.className = grid-btn ${i === 1 ? 'active' : ''};
+            btn.innerText = i;
+            btn.id = day-btn-${i};
+            btn.onclick = () => selectDay(i);
+            gridEl.appendChild(btn);
+        }
+
+        function selectDay(day) {
+            document.getElementById(day-btn-${currentDay}).classList.remove('active');
+            currentDay = day;
+            document.getElementById(day-btn-${currentDay}).classList.add('active');
+            document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
+            document.getElementById('currentDayHeader').innerText = Day ${currentDay} / 100;
+            
+            if (isPlaying) {
+                // Restart soundscape with new day frequency scaling
+                stopSoundBath();
+                startSoundBath();
+            }
+        }
+
+        function nextDay() {
+            let next = currentDay + 1;
+            if (next > 100) next = 1;
+            selectDay(next);
+        }
 
         function updateTimerDisplay() {
             let mins = Math.floor(timeLeft / 60);
@@ -229,7 +252,8 @@
         function togglePlay() {
             const playBtn = document.getElementById('playBtn');
             if (!isPlaying) {
-                startAudio();
+                startAudioContext();
+                startSoundBath();
                 isPlaying = true;
                 playBtn.innerText = '⏸️ PAUSE';
                 timerInterval = setInterval(() => {
@@ -237,70 +261,112 @@
                         timeLeft--;
                         updateTimerDisplay();
                     } else {
-                        if (isRepeat) {
-                            timeLeft = 600;
-                        } else {
-                            stopSession();
-                        }
+                        nextDay();
+                        timeLeft = 600;
                     }
                 }, 1000);
             } else {
-                pauseAudio();
+                stopSoundBath();
                 isPlaying = false;
                 playBtn.innerText = '▶️ PLAY';
                 clearInterval(timerInterval);
             }
         }
 
-        function toggleRepeat() {
-            isRepeat = !isRepeat;
-            const repeatBtn = document.getElementById('repeatBtn');
-            if (isRepeat) {
-                repeatBtn.classList.add('active');
-            } else {
-                repeatBtn.classList.remove('active');
-            }
-        }
-
-        function stopSession() {
-            pauseAudio();
-            isPlaying = false;
-            document.getElementById('playBtn').innerText = '▶️ PLAY';
-            clearInterval(timerInterval);
-            timeLeft = 600;
-            updateTimerDisplay();
-        }
-
-        function startAudio() {
+        function startAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
-            // Gentle ambient frequency synthesis (112Hz resonance)
-            oscillator = audioCtx.createOscillator();
-            gainNode = audioCtx.createGain();
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(112, audioCtx.currentTime);
-            
-            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 3); // Smooth fade in
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
         }
 
-        function pauseAudio() {
-            if (oscillator && audioCtx) {
-                gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        // Procedural Sound Bath Instrument Generator (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
+        function startSoundBath() {
+            if (!audioCtx) return;
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 3); // Smooth fade in
+            masterGain.connect(audioCtx.destination);
+
+            // Base frequency scales gently across the 100 days (from 108Hz base)
+            const baseFreq = 108 + ((currentDay - 1) * 0.35);
+
+            // 1. Crystal & Metal Singing Bowl Fundamental (Warm Sine Wave)
+            const bowlOsc = audioCtx.createOscillator();
+            const bowlGain = audioCtx.createGain();
+            bowlOsc.type = 'sine';
+            bowlOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+            bowlGain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            bowlOsc.connect(bowlGain);
+            bowlGain.connect(masterGain);
+            bowlOsc.start();
+            activeOscillators.push(bowlOsc);
+
+            // 2. Tuning Fork Overtone (Stable Harmonic)
+            const forkOsc = audioCtx.createOscillator();
+            const forkGain = audioCtx.createGain();
+            forkOsc.type = 'triangle';
+            forkOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime); // Perfect fifth harmony
+            forkGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+            forkOsc.connect(forkGain);
+            forkGain.connect(masterGain);
+            forkOsc.start();
+            activeOscillators.push(forkOsc);
+
+            // 3. Ambient Chime / Handpan / Gong trigger loop
+            triggerChimeOrHandpan(baseFreq);
+            ambientInterval = setInterval(() => {
+                triggerChimeOrHandpan(baseFreq);
+            }, 7000); // Trigger acoustic texture every 7 seconds
+        }
+
+        function triggerChimeOrHandpan(baseFreq) {
+            if (!audioCtx || !isPlaying) return;
+
+            const t = audioCtx.currentTime;
+            const chimeOsc = audioCtx.createOscillator();
+            const chimeGain = audioCtx.createGain();
+
+            // Non-harmonic ratios for metallic/chime bell timbres
+            const multipliers = [2.0, 2.76, 3.4, 5.2];
+            const randomMult = multipliers[Math.floor(Math.random() * multipliers.length)];
+
+            chimeOsc.type = 'sine';
+            chimeOsc.frequency.setValueAtTime(baseFreq * randomMult, t);
+
+            chimeGain.gain.setValueAtTime(0.0, t);
+            chimeGain.gain.linearRampToValueAtTime(0.05, t + 0.08); // Quick attack like mallet strike
+            chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5); // Long resonant decay
+
+            chimeOsc.connect(chimeGain);
+            chimeGain.connect(masterGain);
+
+            chimeOsc.start(t);
+            chimeOsc.stop(t + 4.6);
+        }
+
+        function stopSoundBath() {
+            if (ambientInterval) clearInterval(ambientInterval);
+            if (masterGain && audioCtx) {
+                masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
                 setTimeout(() => {
-                    try { oscillator.stop(); oscillator.disconnect(); } catch(e){}
-                    oscillator = null;
-                }, 1000);
+                    activeOscillators.forEach(osc => {
+                        try { osc.stop(); osc.disconnect(); } catch(e){}
+                    });
+                    activeOscillators = [];
+                }, 1600);
             }
+        }
+
+        // Service Worker Registration for PWA Installability
+        if ('serviceWorker' in navigator) {
+            const swCode = self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });;
+            const blob = new Blob([swCode], {type: 'text/javascript'});
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
         }
     </script>
 </body>
