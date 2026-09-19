@@ -3,220 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KEMP EYE 👁️ AI Tranquil 100 Days</title>
+    <title>KEMP EYE - Cymatics Quest · 100 Days</title>
     <!-- PWA Manifest -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#080c14","theme_color":"#111827","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
-    <meta name="theme-color" content="#111827">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE Cymatics Quest","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#07090e","theme_color":"#0b0f19","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+    <meta name="theme-color" content="#07090e">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #080c14;
+            background-color: #07090e;
             color: #e2e8f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            padding: 16px;
         }
         .container {
-            max-width: 480px;
             width: 100%;
-            background: #111827;
-            border: 1px solid #1f2937;
+            max-width: 480px;
+            background: #0b0f19;
+            border: 1px solid #1e293b;
             border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-        }
-        h1 {
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             text-align: center;
-            font-size: 1.3rem;
+        }
+        .brand-title {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .brand-sub {
+            font-size: 0.7rem;
             letter-spacing: 2px;
+            color: #64748b;
+            text-transform: uppercase;
             margin-bottom: 16px;
-            color: #f8fafc;
         }
         .eye-icon {
-            text-align: center;
-            font-size: 2.5rem;
-            margin: 10px 0;
+            font-size: 2.2rem;
             color: #60a5fa;
             text-shadow: 0 0 15px rgba(96, 165, 250, 0.4);
+            margin: 8px 0;
         }
-        .section-title {
-            font-size: 0.78rem;
-            text-transform: uppercase;
+        .day-indicator {
+            font-size: 0.8rem;
             letter-spacing: 1.5px;
             color: #94a3b8;
-            margin-top: 16px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #1f2937;
-            padding-bottom: 4px;
+            text-transform: uppercase;
+            margin-top: 10px;
         }
-        ul {
-            padding-left: 18px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #cbd5e1;
+        .day-main-title {
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            color: #f8fafc;
+            font-weight: 800;
+            margin: 6px 0;
+            text-transform: uppercase;
+        }
+        .day-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 16px;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+        .board-header {
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            text-transform: uppercase;
             margin-bottom: 10px;
+            border-top: 1px solid #1e293b;
+            padding-top: 14px;
         }
-        ul li { margin-bottom: 3px; }
-        
-        /* 1-100 Day Cards Grid Styling */
-        .grid-container {
-            max-height: 220px;
-            overflow-y: auto;
-            border: 1px solid #374151;
-            border-radius: 10px;
-            padding: 10px;
-            background: #0b0f19;
-            margin: 10px 0;
-        }
+        /* 10-Day Grid Layout matching Screenshot */
         .grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
-        .day-card {
-            background: #151c2c;
-            border: 1px solid #2a3447;
-            color: #cbd5e1;
+        .grid-btn {
+            background: #111827;
+            border: 1px solid #334155;
+            color: #94a3b8;
             padding: 10px 4px;
-            text-align: center;
             border-radius: 8px;
             cursor: pointer;
-            user-select: none;
+            text-align: center;
             transition: all 0.2s ease;
         }
-        .day-card .card-num {
-            font-size: 0.8rem;
+        .grid-btn .num {
+            font-size: 0.75rem;
             font-weight: bold;
-            color: #94a3b8;
+            display: block;
+            margin-bottom: 2px;
         }
-        .day-card .card-label {
-            font-size: 0.6rem;
-            color: #64748b;
+        .grid-btn .lbl {
+            font-size: 0.55rem;
+            display: block;
             text-transform: uppercase;
-            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .day-card.active {
-            background: #2563eb !important;
+        .grid-btn.active {
+            background: #1d4ed8 !important;
             border-color: #60a5fa !important;
-            box-shadow: 0 0 12px rgba(37,99,235,0.6);
-        }
-        .day-card.active .card-num,
-        .day-card.active .card-label {
             color: #ffffff !important;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
         }
-        .day-card:hover {
+        .grid-btn:hover {
             background: #1e293b;
-            border-color: #3b82f6;
+            color: #cbd5e1;
         }
-
-        .player-box {
-            background: #0f172a;
+        /* Pagination Controls (< PREVIOUS 10 / NEXT 10 >) */
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .page-btn {
+            flex: 1;
+            background: #111827;
             border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-            margin-top: 16px;
-        }
-        .day-label {
-            font-size: 0.85rem;
+            color: #cbd5e1;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
             font-weight: bold;
-            color: #94a3b8;
             letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
         }
-        .timer {
-            font-size: 2.2rem;
+        .page-btn:hover {
+            background: #1e293b;
+            border-color: #475569;
+        }
+        /* Player Box */
+        .player-box {
+            background: #07090e;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+        .timer-display {
+            font-size: 2rem;
             font-family: monospace;
-            margin: 10px 0;
             letter-spacing: 2px;
             color: #f8fafc;
+            margin: 8px 0;
         }
-        .controls {
+        .action-controls {
             display: flex;
+            gap: 10px;
             justify-content: center;
-            gap: 12px;
-            margin-top: 12px;
         }
-        button.ctrl-btn {
+        button.primary-btn {
             background: #2563eb;
-            color: white;
+            color: #ffffff;
             border: none;
             padding: 12px 24px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
             cursor: pointer;
+            flex: 1;
             transition: opacity 0.2s;
         }
-        button.ctrl-btn:hover { opacity: 0.9; }
-        button.ctrl-btn.next {
-            background: #334155;
-            border: 1px solid #475569;
-        }
-        .safety-box, .privacy-box, .footer {
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-top: 14px;
+        button.primary-btn:hover { opacity: 0.9; }
+        .footer-note {
+            font-size: 0.65rem;
+            color: #475569;
+            margin-top: 16px;
             line-height: 1.4;
-            text-align: center;
         }
-        .safety-box {
-            text-align: left;
-            background: #0b0f19;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #1e293b;
-        }
-        .safety-box strong { color: #94a3b8; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>KEMP EYE 👁️ AI TRANQUIL</h1>
+        <div class="brand-title">KEMP EYE</div>
+        <div class="brand-sub">Cymatics Quest · 100 Days</div>
         
-        <div class="section-title">Before You Begin</div>
-        <ul>
-            <li>Find a comfortable position and allow your body to settle.</li>
-            <li>Place one hand, palm resting softly on your chest.</li>
-            <li>Close your eyes, or soften your gaze.</li>
-            <li>Notice your natural breathing. Don't change or control it.</li>
-            <li>Simply watch the breath as it comes and goes.</li>
-            <li>Allow the sound and guidance to be present.</li>
-            <li>Nothing to achieve. Nothing to force. Remain here.</li>
-        </ul>
+        <div class="eye-icon">👁️</div>
+        
+        <div class="day-indicator" id="dayIndicator">DAY 1 / 100</div>
+        <div class="day-main-title" id="dayTitle">THE FIRST PATTERN</div>
+        <div class="day-desc" id="dayDesc">A mathematical cymatics-inspired visual field.</div>
 
-        <div class="section-title" id="currentDayHeader">Select Day (1 to 100)</div>
-        <div class="grid-container">
-            <div class="grid" id="daysGrid"></div>
+        <div class="board-header" id="boardHeader">CYMATICS BOARD · DAYS 1–10</div>
+        
+        <!-- 10-Day Grid -->
+        <div class="grid" id="daysGrid"></div>
+
+        <!-- Pagination Buttons -->
+        <div class="pagination-controls">
+            <button class="page-btn" onclick="prevBlock()">◄ Previous 10</button>
+            <button class="page-btn" onclick="nextBlock()">Next 10 ►</button>
         </div>
 
+        <!-- Player Module -->
         <div class="player-box">
-            <div class="day-label" id="playerDayLabel">DAY 1</div>
-            <div class="eye-icon">👁️</div>
-            <div class="timer" id="timerDisplay">10:00</div>
-            <div class="controls">
-                <button class="ctrl-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY</button>
-                <button class="ctrl-btn next" onclick="nextDay()">⏭️ NEXT DAY</button>
+            <div class="timer-display" id="timerDisplay">10:00</div>
+            <div class="action-controls">
+                <button class="primary-btn" id="playBtn" onclick="togglePlay()">▶️ PLAY SOUND BATH</button>
             </div>
         </div>
 
-        <div class="safety-box">
-            <strong>HEALTH & SAFETY:</strong> KEMP EYE 👁️ AI Tranquil is a software-based listening and embodied-awareness experience and is not medical treatment, diagnosis, psychotherapy, or a substitute for professional care. Use a comfortable listening volume. Stop if you experience pain, significant discomfort, dizziness, headache, distress, or another concerning symptom. Do not use while driving or operating machinery.
-        </div>
-
-        <div class="privacy-box">
-            🔒 PRIVATE EXPERIENCE • NO DATA COLLECTED
-        </div>
-
-        <div class="footer">
-            © 2026 KishanBali / KEMP Wisdom Publications — All Rights Reserved<br>
-            Disclaimer: This experience is provided for personal experiential use only and does not constitute medical, psychological, therapeutic, or professional advice.
+        <div class="footer-note">
+            © 2026 KishanBali / KEMP Wisdom Publications — All Rights Reserved
         </div>
     </div>
 
     <script>
+        // Full 100 Days Database (Exact titles for 1-10, systematic harmonic titles for 11-100)
+        const allDays = [
+            { title: "THE FIRST PATTERN", sub: "A mathematical cymatics-inspired visual field." },
+            { title: "EMERGING NODES", sub: "Multiplication of harmonic intersection points." },
+            { title: "THE FIELD OPENS", sub: "Boundary expansion and spatial scaling." },
+            { title: "SHIFTING GEOMETRY", sub: "Dynamic phase shifting and morphing symmetry." },
+            { title: "THE CENTRAL FORM", sub: "Midpoint crystallization and core stabilization." },
+            { title: "INTERFERENCE", sub: "Wave superposition and complex overlay." },
+            { title: "RHYTHM & SPACE", sub: "Temporal pacing and entrainment synchronization." },
+            { title: "EXPANDING FIELD", sub: "Macro-scaling and high-frequency saturation." },
+            { title: "RETURN TO CENTER", sub: "Centripetal convergence and energy recall." },
+            { title: "NEW HARMONIC", sub: "Octave shift and cycle completion." }
+        ];
+
+        // Generate titles for Days 11 to 100
+        const themes = ["RESONANCE", "NODAL SHIFT", "HARMONIC FIELD", "WAVE MATRIX", "CYMATIC PULSE", "PHASE LOCK", "OCTAVE RISE", "COHERENCE", "SINGULARITY", "INFINITY"];
+        for (let i = 11; i <= 100; i++) {
+            let blockIdx = Math.floor((i - 1) / 10);
+            allDays.push({
+                title: ${themes[blockIdx % themes.length]} ${i},
+                sub: Advanced cymatics resonance phase ${i} of the 100-day progression.
+            });
+        }
+
         let currentDay = 1;
+        let currentBlock = 0; // 0 represents days 1-10, 1 represents days 11-20, etc.
         let isPlaying = false;
         let timeLeft = 600; // 10 minutes in seconds
         let timerInterval = null;
@@ -227,55 +259,67 @@
         let activeOscillators = [];
         let ambientInterval = null;
 
-        // Build 100 Days Card Grid Dynamically (1 to 100)
-        const gridEl = document.getElementById('daysGrid');
-        for (let i = 1; i <= 100; i++) {
-            const card = document.createElement('div');
-            card.className = day-card ${i === 1 ? 'active' : ''};
-            card.id = day-card-${i};
-            card.innerHTML = <div class="card-num">${i}</div><div class="card-label">Day</div>;
-            card.onclick = () => selectDay(i);
-            gridEl.appendChild(card);
+        function renderGrid() {
+            const gridEl = document.getElementById('daysGrid');
+            gridEl.innerHTML = '';
+            
+            const startIdx = currentBlock * 10;
+            const endIdx = startIdx + 10;
+
+            document.getElementById('boardHeader').innerText = CYMATICS BOARD · DAYS ${startIdx + 1}–${endIdx};
+
+            for (let i = startIdx; i < endIdx; i++) {
+                const dayNum = i + 1;
+                const data = allDays[i];
+                const btn = document.createElement('div');
+                btn.className = grid-btn ${dayNum === currentDay ? 'active' : ''};
+                btn.innerHTML = <span class="num">DAY ${dayNum}</span><span class="lbl">${data.title}</span>;
+                btn.onclick = () => selectDay(dayNum);
+                gridEl.appendChild(btn);
+            }
         }
 
         function selectDay(day) {
-            // Update active styling on grid cards
-            document.getElementById(day-card-${currentDay}).classList.remove('active');
             currentDay = day;
-            document.getElementById(day-card-${currentDay}).classList.add('active');
-            
-            document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
-            document.getElementById('currentDayHeader').innerText = Day ${currentDay} / 100;
-            
-            // Reset timer to full 10 minutes when switching days
+            const data = allDays[day - 1];
+
+            document.getElementById('dayIndicator').innerText = DAY ${day} / 100;
+            document.getElementById('dayTitle').innerText = data.title;
+            document.getElementById('dayDesc').innerText = data.sub;
+
+            // Reset timer on day change
             timeLeft = 600;
             updateTimerDisplay();
 
-            // If audio was playing, restart soundscape with new day's frequency
+            renderGrid();
+
             if (isPlaying) {
                 stopSoundBath();
                 startSoundBath();
             }
         }
 
-        function nextDay() {
-            let next = currentDay + 1;
-            if (next > 100) next = 1;
-            selectDay(next);
+        function nextBlock() {
+            currentBlock = (currentBlock + 1) % 10;
+            renderGrid();
+        }
+
+        function prevBlock() {
+            currentBlock = (currentBlock - 1 + 10) % 10;
+            renderGrid();
         }
 
         function updateTimerDisplay() {
-            let mins = Math.floor(timeLeft / 60);
-            let secs = timeLeft % 60;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
             document.getElementById('timerDisplay').innerText = 
                 (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
         }
 
         function togglePlay() {
             const playBtn = document.getElementById('playBtn');
-            
+
             if (!isPlaying) {
-                // Initialize or Resume AudioContext on user click
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
@@ -285,26 +329,26 @@
 
                 startSoundBath();
                 isPlaying = true;
-                playBtn.innerText = '⏸️ PAUSE';
-                
-                // Start countdown timer, preserving exact remaining seconds on pause/resume
+                playBtn.innerText = '⏸️ PAUSE SOUND BATH';
+
                 timerInterval = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
                         updateTimerDisplay();
                     } else {
-                        nextDay();
+                        // Auto advance to next day when timer hits zero
+                        if (currentDay < 100) selectDay(currentDay + 1);
+                        else selectDay(1);
                     }
                 }, 1000);
             } else {
                 stopSoundBath();
                 isPlaying = false;
-                playBtn.innerText = '▶️ PLAY';
-                clearInterval(timerInterval); // Stops countdown without resetting timeLeft
+                playBtn.innerText = '▶️ RESUME SOUND BATH';
+                clearInterval(timerInterval); // Pauses timer exactly where it is without reset
             }
         }
 
-        // Procedural Sound Bath (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
         function startSoundBath() {
             if (!audioCtx) return;
 
@@ -315,7 +359,7 @@
 
             const baseFreq = 108 + ((currentDay - 1) * 0.35);
 
-            // 1. Crystal & Metal Singing Bowl Fundamental
+            // Fundamental Singing Bowl Oscillator
             const bowlOsc = audioCtx.createOscillator();
             const bowlGain = audioCtx.createGain();
             bowlOsc.type = 'sine';
@@ -326,7 +370,7 @@
             bowlOsc.start();
             activeOscillators.push(bowlOsc);
 
-            // 2. Tuning Fork Harmonic Overtone
+            // Harmonic Overtone
             const forkOsc = audioCtx.createOscillator();
             const forkGain = audioCtx.createGain();
             forkOsc.type = 'triangle';
@@ -337,7 +381,7 @@
             forkOsc.start();
             activeOscillators.push(forkOsc);
 
-            // 3. Random Acoustic Textures (Chimes, Gongs, Handpan)
+            // Ambient Textures
             triggerAcousticTexture(baseFreq);
             ambientInterval = setInterval(() => {
                 triggerAcousticTexture(baseFreq);
@@ -350,7 +394,6 @@
             const t = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-
             const multipliers = [2.0, 2.76, 3.4, 4.1, 5.2];
             const randomMult = multipliers[Math.floor(Math.random() * multipliers.length)];
 
@@ -381,12 +424,14 @@
             }
         }
 
-        // Service Worker for Mobile PWA Installation
+        // Initialize initial grid view
+        renderGrid();
+
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             const swCode = self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });;
             const blob = new Blob([swCode], {type: 'text/javascript'});
-            const swUrl = URL.createObjectURL(blob);
-            navigator.serviceWorker.register(swUrl).catch(() => {});
+            navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
         }
     </script>
 </body>
