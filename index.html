@@ -19,7 +19,7 @@
             align-items: center;
         }
         .container {
-            max-width: 460px;
+            max-width: 480px;
             width: 100%;
             background: #111827;
             border: 1px solid #1f2937;
@@ -62,11 +62,11 @@
             margin-bottom: 3px;
         }
         .grid-container {
-            max-height: 140px;
+            max-height: 160px;
             overflow-y: auto;
             border: 1px solid #1f2937;
             border-radius: 8px;
-            padding: 6px;
+            padding: 8px;
             background: #0b0f19;
             margin: 10px 0;
         }
@@ -202,7 +202,7 @@
     <script>
         let currentDay = 1;
         let isPlaying = false;
-        let timeLeft = 600; // 10 minutes
+        let timeLeft = 600; // 10 minutes default
         let timerInterval = null;
 
         // Web Audio API State
@@ -223,17 +223,19 @@
         }
 
         function selectDay(day) {
+            // Stop current playback when switching days
+            if (isPlaying) {
+                togglePlay();
+            }
             document.getElementById(day-btn-${currentDay}).classList.remove('active');
             currentDay = day;
             document.getElementById(day-btn-${currentDay}).classList.add('active');
             document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
             document.getElementById('currentDayHeader').innerText = Day ${currentDay} / 100;
             
-            if (isPlaying) {
-                // Restart soundscape with new day frequency scaling
-                stopSoundBath();
-                startSoundBath();
-            }
+            // Reset timer to full 10 minutes on new day selection
+            timeLeft = 600;
+            updateTimerDisplay();
         }
 
         function nextDay() {
@@ -252,10 +254,12 @@
         function togglePlay() {
             const playBtn = document.getElementById('playBtn');
             if (!isPlaying) {
-                startAudioContext();
+                initAudioContext();
                 startSoundBath();
                 isPlaying = true;
                 playBtn.innerText = '⏸️ PAUSE';
+                
+                // Countdown timer picking up exactly where it left off
                 timerInterval = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
@@ -263,17 +267,18 @@
                     } else {
                         nextDay();
                         timeLeft = 600;
+                        updateTimerDisplay();
                     }
                 }, 1000);
             } else {
                 stopSoundBath();
                 isPlaying = false;
                 playBtn.innerText = '▶️ PLAY';
-                clearInterval(timerInterval);
+                clearInterval(timerInterval); // Preserves exact timeLeft for resume
             }
         }
 
-        function startAudioContext() {
+        function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
@@ -282,19 +287,19 @@
             }
         }
 
-        // Procedural Sound Bath Instrument Generator (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
+        // Procedural Sound Bath Generator (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
         function startSoundBath() {
             if (!audioCtx) return;
 
             masterGain = audioCtx.createGain();
             masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-            masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 3); // Smooth fade in
+            masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2);
             masterGain.connect(audioCtx.destination);
 
-            // Base frequency scales gently across the 100 days (from 108Hz base)
+            // Progressive frequency shift across 100 days
             const baseFreq = 108 + ((currentDay - 1) * 0.35);
 
-            // 1. Crystal & Metal Singing Bowl Fundamental (Warm Sine Wave)
+            // 1. Crystal & Metal Singing Bowl Fundamental
             const bowlOsc = audioCtx.createOscillator();
             const bowlGain = audioCtx.createGain();
             bowlOsc.type = 'sine';
@@ -305,63 +310,62 @@
             bowlOsc.start();
             activeOscillators.push(bowlOsc);
 
-            // 2. Tuning Fork Overtone (Stable Harmonic)
+            // 2. Tuning Fork Harmonic Overtone
             const forkOsc = audioCtx.createOscillator();
             const forkGain = audioCtx.createGain();
             forkOsc.type = 'triangle';
-            forkOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime); // Perfect fifth harmony
+            forkOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime);
             forkGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
             forkOsc.connect(forkGain);
             forkGain.connect(masterGain);
             forkOsc.start();
             activeOscillators.push(forkOsc);
 
-            // 3. Ambient Chime / Handpan / Gong trigger loop
-            triggerChimeOrHandpan(baseFreq);
+            // 3. Random Ambient Soundscape Textures (Chimes, Gongs, Handpan notes)
+            triggerAcousticTexture(baseFreq);
             ambientInterval = setInterval(() => {
-                triggerChimeOrHandpan(baseFreq);
-            }, 7000); // Trigger acoustic texture every 7 seconds
+                triggerAcousticTexture(baseFreq);
+            }, 6500);
         }
 
-        function triggerChimeOrHandpan(baseFreq) {
+        function triggerAcousticTexture(baseFreq) {
             if (!audioCtx || !isPlaying) return;
 
             const t = audioCtx.currentTime;
-            const chimeOsc = audioCtx.createOscillator();
-            const chimeGain = audioCtx.createGain();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
 
-            // Non-harmonic ratios for metallic/chime bell timbres
-            const multipliers = [2.0, 2.76, 3.4, 5.2];
+            const multipliers = [2.0, 2.76, 3.4, 4.1, 5.2];
             const randomMult = multipliers[Math.floor(Math.random() * multipliers.length)];
 
-            chimeOsc.type = 'sine';
-            chimeOsc.frequency.setValueAtTime(baseFreq * randomMult, t);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(baseFreq * randomMult, t);
 
-            chimeGain.gain.setValueAtTime(0.0, t);
-            chimeGain.gain.linearRampToValueAtTime(0.05, t + 0.08); // Quick attack like mallet strike
-            chimeGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5); // Long resonant decay
+            gain.gain.setValueAtTime(0.0, t);
+            gain.gain.linearRampToValueAtTime(0.045, t + 0.1); 
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 4.0); 
 
-            chimeOsc.connect(chimeGain);
-            chimeGain.connect(masterGain);
+            osc.connect(gain);
+            gain.connect(masterGain);
 
-            chimeOsc.start(t);
-            chimeOsc.stop(t + 4.6);
+            osc.start(t);
+            osc.stop(t + 4.1);
         }
 
         function stopSoundBath() {
             if (ambientInterval) clearInterval(ambientInterval);
             if (masterGain && audioCtx) {
-                masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.5);
+                masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
                 setTimeout(() => {
                     activeOscillators.forEach(osc => {
                         try { osc.stop(); osc.disconnect(); } catch(e){}
                     });
                     activeOscillators = [];
-                }, 1600);
+                }, 1100);
             }
         }
 
-        // Service Worker Registration for PWA Installability
+        // Service Worker for Mobile PWA Installation
         if ('serviceWorker' in navigator) {
             const swCode = self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });;
             const blob = new Blob([swCode], {type: 'text/javascript'});
