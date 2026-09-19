@@ -8,6 +8,7 @@
     <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#080c14","theme_color":"#111827","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
     <meta name="theme-color" content="#111827">
     <style>
+        * { box-sizing: border-box; }
         body {
             background-color: #080c14;
             color: #e2e8f0;
@@ -62,9 +63,9 @@
             margin-bottom: 3px;
         }
         .grid-container {
-            max-height: 160px;
+            max-height: 180px;
             overflow-y: auto;
-            border: 1px solid #1f2937;
+            border: 1px solid #374151;
             border-radius: 8px;
             padding: 8px;
             background: #0b0f19;
@@ -73,23 +74,28 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 4px;
+            gap: 5px;
         }
         .grid-btn {
             background: #1f2937;
-            border: 1px solid #374151;
+            border: 1px solid #4b5563;
             color: #cbd5e1;
-            padding: 6px 0;
+            padding: 8px 0;
             text-align: center;
             border-radius: 4px;
             font-size: 0.75rem;
+            font-weight: bold;
             cursor: pointer;
+            user-select: none;
             transition: all 0.2s;
         }
-        .grid-btn.active, .grid-btn:hover {
-            background: #2563eb;
-            color: white;
-            border-color: #60a5fa;
+        .grid-btn.active {
+            background: #2563eb !important;
+            color: white !important;
+            border-color: #60a5fa !important;
+        }
+        .grid-btn:hover {
+            background: #374151;
         }
         .player-box {
             background: #0f172a;
@@ -106,7 +112,7 @@
             letter-spacing: 1px;
         }
         .timer {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-family: monospace;
             margin: 10px 0;
             letter-spacing: 2px;
@@ -122,10 +128,10 @@
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: opacity 0.2s;
         }
@@ -202,16 +208,16 @@
     <script>
         let currentDay = 1;
         let isPlaying = false;
-        let timeLeft = 600; // 10 minutes default
+        let timeLeft = 600; // 10 minutes in seconds
         let timerInterval = null;
 
-        // Web Audio API State
+        // Web Audio API Variables
         let audioCtx = null;
         let masterGain = null;
         let activeOscillators = [];
         let ambientInterval = null;
 
-        // Initialize 100 Days Grid
+        // Build 100 Days Grid Dynamically
         const gridEl = document.getElementById('daysGrid');
         for (let i = 1; i <= 100; i++) {
             const btn = document.createElement('div');
@@ -223,7 +229,7 @@
         }
 
         function selectDay(day) {
-            // Stop current playback when switching days
+            // Stop audio if currently playing when switching days
             if (isPlaying) {
                 togglePlay();
             }
@@ -253,13 +259,21 @@
 
         function togglePlay() {
             const playBtn = document.getElementById('playBtn');
+            
             if (!isPlaying) {
-                initAudioContext();
+                // Initialize or Resume AudioContext on user gesture
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
                 startSoundBath();
                 isPlaying = true;
                 playBtn.innerText = '⏸️ PAUSE';
                 
-                // Countdown timer picking up exactly where it left off
+                // Start countdown timer keeping exact remaining seconds
                 timerInterval = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
@@ -274,20 +288,11 @@
                 stopSoundBath();
                 isPlaying = false;
                 playBtn.innerText = '▶️ PLAY';
-                clearInterval(timerInterval); // Preserves exact timeLeft for resume
+                clearInterval(timerInterval); // Stops timer cleanly, preserving exact timeLeft for resume
             }
         }
 
-        function initAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        // Procedural Sound Bath Generator (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
+        // Procedural Sound Bath (Singing Bowls, Tuning Forks, Gongs, Chimes, Handpan)
         function startSoundBath() {
             if (!audioCtx) return;
 
@@ -296,7 +301,7 @@
             masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2);
             masterGain.connect(audioCtx.destination);
 
-            // Progressive frequency shift across 100 days
+            // Progressive frequency baseline shifting across 100 days
             const baseFreq = 108 + ((currentDay - 1) * 0.35);
 
             // 1. Crystal & Metal Singing Bowl Fundamental
@@ -321,11 +326,11 @@
             forkOsc.start();
             activeOscillators.push(forkOsc);
 
-            // 3. Random Ambient Soundscape Textures (Chimes, Gongs, Handpan notes)
+            // 3. Random Ambient Textures (Chimes, Gongs, Handpan notes)
             triggerAcousticTexture(baseFreq);
             ambientInterval = setInterval(() => {
                 triggerAcousticTexture(baseFreq);
-            }, 6500);
+            }, 6000);
         }
 
         function triggerAcousticTexture(baseFreq) {
