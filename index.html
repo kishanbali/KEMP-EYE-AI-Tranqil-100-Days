@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KEMP EYE 👁️ AI Tranquil 100 Days</title>
-    <!-- PWA Manifest Data URI -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href='data:application/manifest+json,{"name":"KEMP EYE AI Tranquil","short_name":"KEMP EYE","start_url":".","display":"standalone","background_color":"#080c14","theme_color":"#111827","icons":[{"src":"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>👁️</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
     <meta name="theme-color" content="#111827">
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #080c14;
             color: #e2e8f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
             padding: 16px;
             display: flex;
             flex-direction: column;
@@ -26,7 +25,7 @@
             border: 1px solid #1f2937;
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
         }
         h1 {
             text-align: center;
@@ -53,17 +52,17 @@
             padding-bottom: 4px;
         }
         ul {
-            margin: 0;
             padding-left: 18px;
             font-size: 0.85rem;
             line-height: 1.5;
             color: #cbd5e1;
+            margin-bottom: 10px;
         }
-        ul li {
-            margin-bottom: 3px;
-        }
+        ul li { margin-bottom: 3px; }
+        
+        /* 1-100 Grid Styling */
         .grid-container {
-            max-height: 180px;
+            max-height: 220px;
             overflow-y: auto;
             border: 1px solid #374151;
             border-radius: 8px;
@@ -74,7 +73,7 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 5px;
+            gap: 4px;
         }
         .grid-btn {
             background: #1f2937;
@@ -87,16 +86,18 @@
             font-weight: bold;
             cursor: pointer;
             user-select: none;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
         }
         .grid-btn.active {
             background: #2563eb !important;
             color: white !important;
             border-color: #60a5fa !important;
+            box-shadow: 0 0 8px rgba(37,99,235,0.6);
         }
         .grid-btn:hover {
             background: #374151;
         }
+
         .player-box {
             background: #0f172a;
             border: 1px solid #334155;
@@ -135,9 +136,7 @@
             cursor: pointer;
             transition: opacity 0.2s;
         }
-        button.ctrl-btn:hover {
-            opacity: 0.9;
-        }
+        button.ctrl-btn:hover { opacity: 0.9; }
         button.ctrl-btn.next {
             background: #334155;
             border: 1px solid #475569;
@@ -156,9 +155,7 @@
             border-radius: 8px;
             border: 1px solid #1e293b;
         }
-        .safety-box strong {
-            color: #94a3b8;
-        }
+        .safety-box strong { color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -211,13 +208,13 @@
         let timeLeft = 600; // 10 minutes in seconds
         let timerInterval = null;
 
-        // Web Audio API Variables
+        // Web Audio API State
         let audioCtx = null;
         let masterGain = null;
         let activeOscillators = [];
         let ambientInterval = null;
 
-        // Build 100 Days Grid Dynamically
+        // Build 100 Days Grid Dynamically (1 to 100)
         const gridEl = document.getElementById('daysGrid');
         for (let i = 1; i <= 100; i++) {
             const btn = document.createElement('div');
@@ -229,24 +226,26 @@
         }
 
         function selectDay(day) {
-            // Stop audio if currently playing when switching days
-            if (isPlaying) {
-                togglePlay();
-            }
+            // Update active styling on grid
             document.getElementById(day-btn-${currentDay}).classList.remove('active');
             currentDay = day;
             document.getElementById(day-btn-${currentDay}).classList.add('active');
+            
             document.getElementById('playerDayLabel').innerText = DAY ${currentDay};
             document.getElementById('currentDayHeader').innerText = Day ${currentDay} / 100;
             
-            // Reset timer to full 10 minutes on new day selection
-            timeLeft = 600;
-            updateTimerDisplay();
+            // If playing, restart audio soundscape to match the new day's frequency scaling
+            if (isPlaying) {
+                stopSoundBath();
+                startSoundBath();
+            }
         }
 
         function nextDay() {
             let next = currentDay + 1;
             if (next > 100) next = 1;
+            timeLeft = 600; // Reset timer for new day
+            updateTimerDisplay();
             selectDay(next);
         }
 
@@ -261,7 +260,7 @@
             const playBtn = document.getElementById('playBtn');
             
             if (!isPlaying) {
-                // Initialize or Resume AudioContext on user gesture
+                // Initialize or Resume AudioContext
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 }
@@ -273,22 +272,20 @@
                 isPlaying = true;
                 playBtn.innerText = '⏸️ PAUSE';
                 
-                // Start countdown timer keeping exact remaining seconds
+                // Start countdown timer, preserving exact remaining seconds on pause/resume
                 timerInterval = setInterval(() => {
                     if (timeLeft > 0) {
                         timeLeft--;
                         updateTimerDisplay();
                     } else {
                         nextDay();
-                        timeLeft = 600;
-                        updateTimerDisplay();
                     }
                 }, 1000);
             } else {
                 stopSoundBath();
                 isPlaying = false;
                 playBtn.innerText = '▶️ PLAY';
-                clearInterval(timerInterval); // Stops timer cleanly, preserving exact timeLeft for resume
+                clearInterval(timerInterval); // Stops countdown without resetting timeLeft
             }
         }
 
@@ -301,7 +298,6 @@
             masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 2);
             masterGain.connect(audioCtx.destination);
 
-            // Progressive frequency baseline shifting across 100 days
             const baseFreq = 108 + ((currentDay - 1) * 0.35);
 
             // 1. Crystal & Metal Singing Bowl Fundamental
@@ -326,7 +322,7 @@
             forkOsc.start();
             activeOscillators.push(forkOsc);
 
-            // 3. Random Ambient Textures (Chimes, Gongs, Handpan notes)
+            // 3. Random Acoustic Textures (Chimes, Gongs, Handpan)
             triggerAcousticTexture(baseFreq);
             ambientInterval = setInterval(() => {
                 triggerAcousticTexture(baseFreq);
